@@ -7,6 +7,7 @@ class PackageCategory(models.Model):
 
     name = fields.Char(string='Name')
 
+
     _sql_constraints = [
         ('name_uniq', 'unique (name)', "Name already exists!"),
     ]
