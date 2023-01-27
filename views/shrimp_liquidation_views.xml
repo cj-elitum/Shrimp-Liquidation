@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="shrimp_liquidation_package_action" model="ir.actions.act_window">
+        <field name="name">Shrimp Liquidation Action</field>
+        <field name="res_model">shrimp_liquidation.liquidation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--    Create the basic tree for package-->
+    <record id="shrimp_liquidation_package_tree" model="ir.ui.view">
+        <field name="name">shrimp_liquidation_tree</field>
+        <field name="model">shrimp_liquidation.liquidation</field>
+        <field name="arch" type="xml">
+            <tree string="Shrimp Liquidations">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    Create a basic form for package-->
+    <record id="shrimp_liquidation_package_form" model="ir.ui.view">
+        <field name="name">shrimp_liquidation_form</field>
+        <field name="model">shrimp_liquidation.liquidation</field>
+        <field name="arch" type="xml">
+            <form string="Shrimp Liquidation">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="cola"/>
+                            <field name="pcd_iqf"/>
+                            <field name="cocido_pyd_iqf"/>
+                        </group>
+                        <group>
+                            <field name="pyd_block"/>
+                            <field name="fresh"/>
+                            <field name="reprocesses"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Información General">
+                            <group>
+                                <group>
+                                    <field name="proccess_plant"/>
+                                    <field name="provider"/>
+                                    <field name="reported_pounds"/>
+                                    <field name="classified_pounds"/>
+                                </group>
+                                <group>
+                                    <field name="received_pounds"/>
+                                    <field name="reception_date"/>
+                                    <field name="batch_number"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Productos">
+                            <field name="liquidity_lines_ids" widget="one2many" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="product_template_id"/>
+                                    <field name="size"/>
+                                    <field name="package_type"/>
+                                    <field name="qty"/>
+                                    <field name="weight"/>
+                                    <field name="total_weight"/>
+                                </tree>
+                            </field>
+                            <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="total_packaged_weight">
+                                            <span>Total</span>
+                                        </label>
+                                    </div>
+                                    <field name="total_packaged_weight" nolabel="1" class="oe_subtotal_footer_separator"
+                                           widget='monetary'/>
+                                </group>
+                                <div class="oe_clear"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
