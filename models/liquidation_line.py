@@ -7,7 +7,8 @@ class LiquidationLine(models.Model):
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion")
     product_template_id = fields.Many2one('product.template', string="Producto")
-    size = fields.Char(related='product_template_id.size', string="Tamaño")
+    size = fields.Char(related='product_template_id.size', string="Talla")
+    product_unit_cost = fields.Float(related='product_template_id.standard_price', string="Costo Unitario")
 
     package_type = fields.Selection([
         ('6x2 kg', '6x2 kg'),
