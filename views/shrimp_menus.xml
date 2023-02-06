@@ -5,12 +5,40 @@
     <menuitem id="shrimp_liquidation_menu_root"
               name="Shrimp Liquidation"/>
 
-      <menuitem id="shrimp_liquidation_management_menu"
+    <!-- Main menu -->
+    <menuitem id="shrimp_liquidation_management_menu"
               name="Manage Shrimp Liquidation"
-              parent="shrimp_liquidation_menu_root"/>
+              parent="shrimp_liquidation_menu_root"
+              sequence="1"
+    />
 
-        <menuitem id="shrimp_liquidation_package_menu"
+    <menuitem id="shrimp_liquidation_package_menu"
               name="Liquidation Packages"
               parent="shrimp_liquidation_management_menu"
               action="shrimp_liquidation_package_action"/>
+
+    <!-- Config menu -->
+    <menuitem id="shrimp_liquidation_config_menu"
+              name="Configurations"
+              parent="shrimp_liquidation_menu_root"
+              sequence="3"
+    />
+
+    <menuitem id="shrimp_liquidation_config_menu_package"
+              name="Packages"
+              parent="shrimp_liquidation_config_menu"
+              action="shrimp_liquidation_config_action_packages"/>
+
+    <!-- Purchase orders menu -->
+    <menuitem id="shrimp_liquidation_order_menu" name="Orders"
+              parent="shrimp_liquidation_menu_root"
+              sequence="2"
+    />
+
+    <menuitem id="shrimp_liquidation_menu_purchase_rfq"
+              action="purchase.purchase_form_action"
+              parent="shrimp_liquidation_order_menu"
+    />
+
+
 </odoo>

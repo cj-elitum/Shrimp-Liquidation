@@ -16,16 +16,18 @@ class Liquidation(models.Model):
 
     # Header
     proccess_plant = fields.Char(string="Planta de proceso")
-    provider = fields.Many2one('res.partner', string="Proveedor")
+    provider_id = fields.Many2one('res.partner', string="Proveedor")
     reported_pounds = fields.Float(string="Libras reportadas")
-    classified_pounds = fields.Float(string="Libras clasificadas")
+    classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds")
     reception_date = fields.Date(string="Fecha de recepción")
     received_pounds = fields.Float(string="Libras recibidas")
     batch_number = fields.Char(string="Número de lote")
 
     # Packaged Product Lines
-    liquidity_lines_ids = fields.One2many('shrimp_liquidation.liquidation.line', 'liquidation_id', string="Líneas de producto empaquetado")
+    liquidity_lines_ids = fields.One2many('shrimp_liquidation.liquidation.line', 'liquidation_id',
+                                          string="Líneas de producto empaquetado")
     total_packaged_weight = fields.Float(string="Peso total empaquetado", compute="_compute_total_packaged_weight")
+    purchase_order_ids = fields.One2many('purchase.order', 'liquidation_id', string="Ordenes de compra")
 
     # Information
     client = fields.Many2one('res.partner', string="Cliente")
@@ -61,14 +63,19 @@ class Liquidation(models.Model):
     cola_pounds_yield = fields.Float(string="Rendimiento de Libras COLA")
 
     # Materials
-    material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id', string="Líneas de materiales")
+    material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
+                                         string="Líneas de materiales")
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
         for r in self:
             r.total_packaged_weight = sum(r.liquidity_lines_ids.mapped('total_weight'))
 
+    @api.depends('liquidity_lines_ids')
+    def _compute_classified_pounds(self):
+        for r in self:
+            r.classified_pounds = sum(r.liquidity_lines_ids.mapped('total_weight'))
 
-
-
+    def generate_purchase_order(self):
+        pass
 
