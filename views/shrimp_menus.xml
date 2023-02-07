@@ -21,7 +21,7 @@
     <menuitem id="shrimp_liquidation_config_menu"
               name="Configurations"
               parent="shrimp_liquidation_menu_root"
-              sequence="3"
+              sequence="4"
     />
 
     <menuitem id="shrimp_liquidation_config_menu_package"
@@ -38,6 +38,29 @@
     <menuitem id="shrimp_liquidation_menu_purchase_rfq"
               action="purchase.purchase_rfq"
               parent="shrimp_liquidation_order_menu"
+    />
+
+    <!-- Product menu -->
+    <menuitem id="shrimp_liquidation_product_menu" name="Products"
+              parent="shrimp_liquidation_menu_root"
+              sequence="3"
+    />
+
+    <menuitem id="shrimp_liquidation_menu_product_template"
+              action="product.product_template_action"
+              parent="shrimp_liquidation_product_menu"
+    />
+
+    <!-- Product variants menu -->
+    <menuitem id="shrimp_liquidation_product_variants_menu" name="Product Variants"
+              parent="shrimp_liquidation_product_menu"
+              action="product.product_normal_action"
+    />
+
+    <!-- Product lots menu -->
+    <menuitem id="shrimp_liquidation_product_lots_menu" name="Lots"
+              parent="shrimp_liquidation_product_menu"
+              action="stock.action_production_lot_form"
     />
 
 

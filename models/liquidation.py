@@ -80,7 +80,8 @@ class Liquidation(models.Model):
         purchase_order = self.env['purchase.order'].create({
             'partner_id': self.provider_id.id,
             'liquidation_id': self.id,
-            'date_order': fields.Date.today(),
+            'date_order': fields.Datetime.now(),
+            'date_planned': fields.Datetime.now(),
         })
 
         for line in self.liquidity_lines_ids:
@@ -91,3 +92,16 @@ class Liquidation(models.Model):
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,
             })
+
+        return self.create_notification()
+
+    def create_notification(self):
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Notificación',
+                'message': 'Orden de compra generada',
+                'sticky': True,
+            }
+        }
