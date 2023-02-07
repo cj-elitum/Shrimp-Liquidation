@@ -6,7 +6,7 @@ class LiquidationLine(models.Model):
     _description = 'Package Line'
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion", ondelete='cascade')
-    product_id = fields.Many2one('product.product', string="Producto", domain=[('purchase_ok', '=', True)])
+    product_id = fields.Many2one('product.product', string="Producto", domain=[('purchase_ok', '=', True),('categ_id.name', '=', 'shrimp')])
     product_unit_cost = fields.Float(string="Costo unitario", related="product_id.standard_price")
     product_uom = fields.Many2one('uom.uom', string="UoM", related="product_id.uom_id")
     product_template_attribute_value_ids = fields.Many2many('product.template.attribute.value', string="Clasificacion", related="product_id.product_template_attribute_value_ids")

@@ -4,6 +4,7 @@ from odoo import models, fields, api
 class Liquidation(models.Model):
     _name = 'shrimp_liquidation.liquidation'
     _description = 'Liquidation'
+    _inherit = ['mail.thread','mail.activity.mixin']
 
     name = fields.Char(string='Name', required=True)
 
@@ -16,7 +17,7 @@ class Liquidation(models.Model):
 
     # Header
     proccess_plant = fields.Char(string="Planta de proceso")
-    provider_id = fields.Many2one('res.partner', string="Proveedor")
+    provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
     reported_pounds = fields.Float(string="Libras reportadas")
     classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds")
     reception_date = fields.Date(string="Fecha de recepción")

@@ -133,19 +133,15 @@
                                 </group>
                             </group>
                         </page>
-<!--                        <page string="Materiales">-->
-<!--                            <field name="material_lines_ids" widget="one2many">-->
-<!--                                <tree editable="bottom">-->
-<!--                                    <field name="product_template_id"/>-->
-<!--                                    <field name="lbs_iqf"/>-->
-<!--                                    <field name="size"/>-->
-<!--                                    <field name="qty"/>-->
-<!--                                    <field name="weight"/>-->
-<!--                                    <field name="product_unit_cost"/>-->
-<!--                                    <field name="total_weight"/>-->
-<!--                                </tree>-->
-<!--                            </field>-->
-<!--                        </page>-->
+                        <page string="Materiales">
+                            <field name="material_lines_ids" widget="one2many">
+                                <tree editable="bottom">
+                                    <field name="product_template_id"/>
+                                    <field name="qty"/>
+                                    <field name="product_unit_cost"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
