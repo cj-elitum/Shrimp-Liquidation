@@ -62,7 +62,6 @@
                     </group>
                     <notebook>
                         <page string="Clasificacion">
-                            <field name="state" invisible="1"/>
                             <field name="liquidity_lines_ids" widget="one2many" nolabel="1"
                                    attrs="{'readonly': [('state', '=', 'order_created')]}"  >
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
