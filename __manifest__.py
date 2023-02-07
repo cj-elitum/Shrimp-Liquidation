@@ -8,10 +8,11 @@
     'data': [
         'security/ir.model.access.csv',
         'views/shrimp_liquidation_views.xml',
-        'views/shrimp_menus.xml',
         'views/shrimp_liquidation_config_views.xml',
         'views/inherited_product_template_form_view.xml',
         'views/inherited_purchase_order_view.xml',
+        'views/shrimp_menus.xml',
+
     ],
     'demo': [],
     'installable': True,

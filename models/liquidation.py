@@ -77,5 +77,17 @@ class Liquidation(models.Model):
             r.classified_pounds = sum(r.liquidity_lines_ids.mapped('total_weight'))
 
     def generate_purchase_order(self):
-        pass
+        purchase_order = self.env['purchase.order'].create({
+            'partner_id': self.provider_id.id,
+            'liquidation_id': self.id,
+            'date_order': fields.Date.today(),
+        })
 
+        for line in self.liquidity_lines_ids:
+            self.env['purchase.order.line'].create({
+                'product_id': line.product_id.id,
+                'product_qty': line.total_weight,
+                'price_unit': line.product_id.standard_price,
+                'order_id': purchase_order.id,
+                'product_uom': line.product_id.uom_po_id.id,
+            })

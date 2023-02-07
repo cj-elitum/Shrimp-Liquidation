@@ -36,7 +36,7 @@
     />
 
     <menuitem id="shrimp_liquidation_menu_purchase_rfq"
-              action="purchase.purchase_form_action"
+              action="purchase.purchase_rfq"
               parent="shrimp_liquidation_order_menu"
     />
 
