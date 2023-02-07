@@ -22,9 +22,12 @@
         <field name="name">shrimp_liquidation_form</field>
         <field name="model">shrimp_liquidation.liquidation</field>
         <field name="arch" type="xml">
-            <form string="Shrimp Liquidation">
+            <form string="Shrimp Liquidation" >
                 <header>
-                    <button name="generate_purchase_order" string="Generate Order" type="object" class="oe_highlight"/>
+                    <button name="generate_purchase_order" string="Generate Order"
+                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"  />
+                    <button name="action_draft" string="Draft" type="object"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -58,9 +61,11 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Productos A">
-                            <field name="liquidity_lines_ids" widget="one2many" nolabel="1">
-                                <tree editable="bottom">
+                        <page string="Clasificacion">
+                            <field name="state" invisible="1"/>
+                            <field name="liquidity_lines_ids" widget="one2many" nolabel="1"
+                                   attrs="{'readonly': [('state', '=', 'order_created')]}"  >
+                                <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
                                     <field name="product_template_attribute_value_ids" widget="many2many_tags" />
                                     <field name="package_id" />

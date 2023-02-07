@@ -66,6 +66,12 @@ class Liquidation(models.Model):
     material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
                                          string="Líneas de materiales")
 
+    # State
+    state = fields.Selection([
+        ('draft', 'Borrador'),
+        ('order_created', 'Orden Creada'),
+    ], string='Estado', default='draft')
+
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
         for r in self:
@@ -77,6 +83,7 @@ class Liquidation(models.Model):
             r.classified_pounds = sum(r.liquidity_lines_ids.mapped('total_weight'))
 
     def generate_purchase_order(self):
+        self.write({'state': 'order_created'})
         purchase_order = self.env['purchase.order'].create({
             'partner_id': self.provider_id.id,
             'liquidation_id': self.id,
@@ -93,15 +100,16 @@ class Liquidation(models.Model):
                 'product_uom': line.product_id.uom_po_id.id,
             })
 
-        return self.create_notification()
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'tag': 'display_notification',
+        #     'params': {
+        #         'title': 'Notificación',
+        #         'message': 'Orden de compra generada',
+        #         'sticky': False,
+        #         'type': 'info',
+        #     }
+        # }
 
-    def create_notification(self):
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Notificación',
-                'message': 'Orden de compra generada',
-                'sticky': True,
-            }
-        }
+    def action_draft(self):
+        self.state = 'draft'
