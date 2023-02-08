@@ -1,10 +1,10 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class Liquidation(models.Model):
     _name = 'shrimp_liquidation.liquidation'
     _description = 'Liquidation'
-    _inherit = ['mail.thread','mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', required=True)
 
@@ -100,17 +100,10 @@ class Liquidation(models.Model):
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,
             })
-
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'display_notification',
-        #     'params': {
-        #         'title': 'Notificación',
-        #         'message': 'Orden de compra generada',
-        #         'sticky': False,
-        #         'type': 'info',
-        #     }
-        # }
+        # Post a message in the chatter with the generated PO
+        self.message_post(body=_("Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (purchase_order.id, purchase_order.name))
+        self.message_post(body=_("Estado: Borrador -> Orden Creada"))
 
     def action_draft(self):
         self.state = 'draft'
+

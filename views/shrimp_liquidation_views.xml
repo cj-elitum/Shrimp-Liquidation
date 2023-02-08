@@ -22,10 +22,10 @@
         <field name="name">shrimp_liquidation_form</field>
         <field name="model">shrimp_liquidation.liquidation</field>
         <field name="arch" type="xml">
-            <form string="Shrimp Liquidation" >
+            <form string="Shrimp Liquidation">
                 <header>
                     <button name="generate_purchase_order" string="Generate Order"
-                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"  />
+                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="action_draft" string="Draft" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -63,11 +63,11 @@
                     <notebook>
                         <page string="Clasificacion">
                             <field name="liquidity_lines_ids" widget="one2many" nolabel="1"
-                                   attrs="{'readonly': [('state', '=', 'order_created')]}"  >
+                                   attrs="{'readonly': [('state', '=', 'order_created')]}">
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
-                                    <field name="product_template_attribute_value_ids" widget="many2many_tags" />
-                                    <field name="package_id" />
+                                    <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
+                                    <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
                                     <field name="product_unit_cost"/>
@@ -124,12 +124,12 @@
                                     <field name="packaged_pounds"/>
                                 </group>
                                 <group>
-                                    <field name="peeling_yield" widget="percentage" />
-                                    <field name="treated_yield" widget="percentage" />
-                                    <field name="cooked_yield" widget="percentage" />
-                                    <field name="decorated_yield" widget="percentage" />
-                                    <field name="iqf_yield" widget="percentage" />
-                                    <field name="cola_pounds_yield" widget="percentage" />
+                                    <field name="peeling_yield" widget="percentage"/>
+                                    <field name="treated_yield" widget="percentage"/>
+                                    <field name="cooked_yield" widget="percentage"/>
+                                    <field name="decorated_yield" widget="percentage"/>
+                                    <field name="iqf_yield" widget="percentage"/>
+                                    <field name="cola_pounds_yield" widget="percentage"/>
                                 </group>
                             </group>
                         </page>
@@ -144,6 +144,11 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
