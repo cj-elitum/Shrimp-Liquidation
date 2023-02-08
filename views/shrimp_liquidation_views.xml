@@ -66,7 +66,6 @@
                                    attrs="{'readonly': [('state', '=', 'order_created')]}">
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
-                                    <field name="product_template_attribute_value_ids" widget="many2many_tags"/>
                                     <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
@@ -136,9 +135,11 @@
                         <page string="Materiales">
                             <field name="material_lines_ids" widget="one2many">
                                 <tree editable="bottom">
-                                    <field name="product_template_id"/>
-                                    <field name="qty"/>
-                                    <field name="product_unit_cost"/>
+                                    <field name="product_shrimp_id"/>
+                                    <field name="product_package_id"/>
+                                    <field name="package_qty"/>
+                                    <field name="product_package_uom"/>
+                                    <field name="package_stock_availability" decoration-success="package_stock_availability > 0" decoration-danger="package_stock_availability &lt;= 0" />
                                 </tree>
                             </field>
                         </page>
