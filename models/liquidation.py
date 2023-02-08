@@ -71,6 +71,7 @@ class Liquidation(models.Model):
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('order_created', 'Orden Creada'),
+        ('validated_materials', 'Materiales Validados'),
     ], string='Estado', default='draft')
 
     @api.depends('liquidity_lines_ids')
@@ -106,4 +107,10 @@ class Liquidation(models.Model):
 
     def action_draft(self):
         self.state = 'draft'
+
+    def action_validate_materials(self):
+        self.state = 'validated_materials'
+
+
+
 
