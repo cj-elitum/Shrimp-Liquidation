@@ -67,6 +67,8 @@ class Liquidation(models.Model):
     material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
                                          string="Líneas de materiales")
 
+    move_material_ids = fields.One2many('stock.move', 'liquidation_id', string="Movimientos")
+
     # State
     state = fields.Selection([
         ('draft', 'Borrador'),

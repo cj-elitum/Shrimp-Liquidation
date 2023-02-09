@@ -14,7 +14,8 @@ class MaterialLine(models.Model):
                                          domain=[('purchase_ok', '=', True), ('categ_id.name', '=', 'Empaques')])
     package_qty = fields.Float(string="Cantidad")
     product_package_uom = fields.Many2one('uom.uom', string="UoM", related="product_package_id.uom_id")
-    package_stock_availability = fields.Float(string="Disponibilidad", compute="_compute_stock_availability", readonly=True)
+    package_stock_availability = fields.Float(string="Cantidad inventario", compute="_compute_stock_availability", readonly=True)
+    reserved_stock_availability = fields.Float(string="Reservado", compute="_compute_package_reserved_stock_availability", readonly=True)
 
 
     # Materials
@@ -35,10 +36,18 @@ class MaterialLine(models.Model):
                 [('product_id', '=', record.product_material_id.product_variant_id.id)], limit=1)
             record.material_stock_availability = stock_quant.quantity
 
-    @api.onchange('qty')
+    @api.depends('package_stock_availability')
+    def _compute_package_reserved_stock_availability(self):
+        # The reserved stock is equal to this product stock.quant reserved_quantity
+        for record in self:
+            stock_quant = self.env['stock.quant'].search(
+                [('product_id', '=', record.product_package_id.product_variant_id.id)], limit=1)
+            record.reserved_stock_availability = stock_quant.reserved_quantity
+
+    @api.onchange('package_qty')
     def _onchange_qty(self):
-        if self.qty > self.package_stock_availability:
-            self.qty = self.package_stock_availability
+        if self.package_qty > self.package_stock_availability:
+            self.package_qty = self.package_stock_availability
             # Return and display a warning message
             return {
                 'warning': {

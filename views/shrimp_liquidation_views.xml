@@ -143,18 +143,22 @@
                                     <!-- Packages -->
                                     <field name="package_qty"/>
                                     <field name="product_package_uom"/>
+                                    <field name="reserved_stock_availability"/>
                                     <field name="package_stock_availability"
                                            decoration-success="package_stock_availability > 0"
                                            decoration-danger="package_stock_availability &lt;= 0"/>
-                                    <!-- Materials -->
-                                    <field name="product_material_id"/>
-                                    <field name="material_qty"/>
-                                    <field name="product_material_uom"/>
-                                    <field name="material_stock_availability"
-                                           decoration-success="material_stock_availability > 0"
-                                           decoration-danger="material_stock_availability &lt;= 0"/>
+<!--                                    &lt;!&ndash; Materials &ndash;&gt;-->
+<!--                                    <field name="product_material_id"/>-->
+<!--                                    <field name="material_qty"/>-->
+<!--                                    <field name="product_material_uom"/>-->
+<!--                                    <field name="material_stock_availability"-->
+<!--                                           decoration-success="material_stock_availability > 0"-->
+<!--                                           decoration-danger="material_stock_availability &lt;= 0"/>-->
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Movimientos de materiales">
+                            <field name="move_material_ids" widget="one2many"/>
                         </page>
                     </notebook>
                 </sheet>
