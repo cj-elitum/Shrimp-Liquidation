@@ -10,6 +10,7 @@ class LiquidationLine(models.Model):
     product_unit_cost = fields.Float(string="Costo unitario", related="product_id.standard_price")
     product_uom = fields.Many2one('uom.uom', string="UoM", related="product_id.uom_id")
     package_id = fields.Many2one('shrimp_liquidation.liquidation.package', string="Empaque")
+    product_attribute_ids = fields.Many2many('product.template.attribute.value', string="Atributos", related="product_id.product_template_attribute_value_ids")
 
     qty = fields.Integer(string="Cantidad")
     weight = fields.Float(string="Peso")

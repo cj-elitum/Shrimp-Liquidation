@@ -6,7 +6,7 @@ class MaterialLine(models.Model):
     _description = 'Material Line'
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion")
-    product_shrimp_id = fields.Many2one('product.template', string="Camaron",
+    product_shrimp_id = fields.Many2one('product.product', string="Camaron",
                                         domain=[('purchase_ok', '=', True), ('categ_id.name', '=', 'Camaron')])
 
     # Packages

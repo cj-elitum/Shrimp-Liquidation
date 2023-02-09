@@ -68,6 +68,7 @@
                                    attrs="{'readonly': [('state', '=', 'order_created')]}">
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
+                                    <field name="product_attribute_ids" widget="many2many_tags" />
                                     <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
