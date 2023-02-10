@@ -6,8 +6,41 @@ class Liquidation(models.Model):
     _description = 'Liquidation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', required=True)
+    @api.model
+    def _get_default_location_src_id(self):
+        location = False
+        company_id = self.env.context.get('default_company_id', self.env.company.id)
+        if self.env.context.get('default_picking_type_id'):
+            location = self.env['stock.picking.type'].browse(
+                self.env.context['default_picking_type_id']).default_location_src_id
+        if not location:
+            location = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1).lot_stock_id
+        return location and location.id or False
 
+    @api.model
+    def _get_default_location_dest_id(self):
+        location = False
+        company_id = self.env.context.get('default_company_id', self.env.company.id)
+        if self._context.get('default_picking_type_id'):
+            location = self.env['stock.picking.type'].browse(
+                self.env.context['default_picking_type_id']).default_location_dest_id
+        if not location:
+            location = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1).lot_stock_id
+        return location and location.id or False
+
+    @api.depends('company_id')
+    def _compute_production_location(self):
+        if not self.company_id:
+            return
+        location_by_company = self.env['stock.location'].read_group([
+            ('company_id', 'in', self.company_id.ids),
+            ('usage', '=', 'production')
+        ], ['company_id', 'ids:array_agg(id)'], ['company_id'])
+        location_by_company = {lbc['company_id'][0]: lbc['ids'] for lbc in location_by_company}
+        for liquidation in self:
+            liquidation.material_location_id = location_by_company.get(liquidation.company_id.id)[0]
+
+    name = fields.Char(string='Name', required=True)
     cola = fields.Boolean(string="COLA")
     pcd_iqf = fields.Boolean(string="PCD IQF")
     cocido_pyd_iqf = fields.Boolean(string="COCIDO PYD IQF")
@@ -48,6 +81,7 @@ class Liquidation(models.Model):
     glazing_qty = fields.Float(string="% de glaseado real")
     thawing_period_start_datetime = fields.Datetime(string="Inicio de periodo de descongelación")
     thawing_period_end_datetime = fields.Datetime(string="Fin de periodo de descongelación")
+    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
 
     # Rendimiento
     peeled_pounds = fields.Float(string="Libras peladas")
@@ -67,7 +101,18 @@ class Liquidation(models.Model):
     material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
                                          string="Líneas de materiales")
 
+    # Material movements
     move_material_ids = fields.One2many('stock.move', 'liquidation_id', string="Movimientos")
+    location_src_id = fields.Many2one(
+        'stock.location', 'Components Location',
+        default=_get_default_location_src_id,
+        readonly=True, required=True,
+        domain="[('usage','=','internal'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        states={'draft': [('readonly', False)]}, check_company=True,
+        help="Location where the system will look for components.")
+
+    material_location_id = fields.Many2one('stock.location', "Materials Location",
+                                           compute="_compute_production_location", store=True)
 
     # State
     state = fields.Selection([
@@ -104,7 +149,9 @@ class Liquidation(models.Model):
                 'product_uom': line.product_id.uom_po_id.id,
             })
         # Post a message in the chatter with the generated PO
-        self.message_post(body=_("Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (purchase_order.id, purchase_order.name))
+        self.message_post(
+            body=_("Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
+                purchase_order.id, purchase_order.name))
         self.message_post(body=_("Estado: Borrador -> Orden Creada"))
 
     def action_draft(self):
@@ -112,7 +159,3 @@ class Liquidation(models.Model):
 
     def action_validate_materials(self):
         self.state = 'validated_materials'
-
-
-
-

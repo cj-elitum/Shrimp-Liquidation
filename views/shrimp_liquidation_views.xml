@@ -60,6 +60,9 @@
                             <field name="received_pounds"/>
                             <field name="reception_date"/>
                             <field name="batch_number"/>
+                            <field name="company_id"/>
+                            <field name="location_src_id" invisible="1"/>
+                            <field name="material_location_id" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -68,7 +71,7 @@
                                    attrs="{'readonly': [('state', '=', 'order_created')]}">
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
-                                    <field name="product_attribute_ids" widget="many2many_tags" />
+                                    <field name="product_attribute_ids" widget="many2many_tags"/>
                                     <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
@@ -147,18 +150,33 @@
                                     <field name="package_stock_availability"
                                            decoration-success="package_stock_availability > 0"
                                            decoration-danger="package_stock_availability &lt;= 0"/>
-<!--                                    &lt;!&ndash; Materials &ndash;&gt;-->
-<!--                                    <field name="product_material_id"/>-->
-<!--                                    <field name="material_qty"/>-->
-<!--                                    <field name="product_material_uom"/>-->
-<!--                                    <field name="material_stock_availability"-->
-<!--                                           decoration-success="material_stock_availability > 0"-->
-<!--                                           decoration-danger="material_stock_availability &lt;= 0"/>-->
+                                    <!--                                    &lt;!&ndash; Materials &ndash;&gt;-->
+                                    <!--                                    <field name="product_material_id"/>-->
+                                    <!--                                    <field name="material_qty"/>-->
+                                    <!--                                    <field name="product_material_uom"/>-->
+                                    <!--                                    <field name="material_stock_availability"-->
+                                    <!--                                           decoration-success="material_stock_availability > 0"-->
+                                    <!--                                           decoration-danger="material_stock_availability &lt;= 0"/>-->
                                 </tree>
                             </field>
                         </page>
                         <page string="Movimientos de materiales">
-                            <field name="move_material_ids" widget="one2many"/>
+                            <field name="move_material_ids" context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
+                                <tree editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date_deadline" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="state" invisible="1" />
+
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
