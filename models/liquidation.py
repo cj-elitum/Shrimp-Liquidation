@@ -125,7 +125,6 @@ class Liquidation(models.Model):
     service_lines_ids = fields.One2many('shrimp_liquidation.liquidation.service.line', 'liquidation_id',
                                         string="Líneas de servicios")
 
-
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
         for r in self:
@@ -164,3 +163,25 @@ class Liquidation(models.Model):
 
     def action_validate_materials(self):
         self.state = 'validated_materials'
+
+    def action_generate_services(self):
+        for service in self.service_lines_ids:
+            purchase_order = self.env['purchase.order'].create({
+                'partner_id': service.provider_id.id,
+                'liquidation_id': self.id,
+                'date_order': fields.Datetime.now(),
+                'date_planned': fields.Datetime.now(),
+            })
+
+            self.env['purchase.order.line'].create({
+                'product_id': service.product_service_id.id,
+                'product_qty': service.service_qty,
+                'order_id': purchase_order.id,
+            })
+
+            # Post a message in the chatter with the generated PO
+            self.message_post(
+                body=_(
+                    "Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
+                         purchase_order.id, purchase_order.name))
+            self.message_post(body=_("Estado: PO de Servicios Creada"))

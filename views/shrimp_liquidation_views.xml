@@ -28,6 +28,8 @@
                             type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="action_validate_materials" string="Validate Materials"
                             type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','order_created')]}"/>
+                    <button name="action_generate_services" string="Generate Services"
+                            type="object" class="oe_highlight" />
                     <button name="action_draft" string="Draft" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -138,37 +140,38 @@
                                 </group>
                             </group>
                         </page>
-<!--                        <page string="Materiales">-->
-<!--                            <field name="material_lines_ids" widget="one2many">-->
-<!--                                <tree editable="bottom">-->
-<!--                                    <field name="product_shrimp_id"/>-->
-<!--                                    <field name="product_package_id"/>-->
-<!--                                    &lt;!&ndash; Packages &ndash;&gt;-->
-<!--                                    <field name="package_qty"/>-->
-<!--                                    <field name="product_package_uom"/>-->
-<!--                                    <field name="reserved_stock_availability"/>-->
-<!--                                    <field name="package_stock_availability"-->
-<!--                                           decoration-success="package_stock_availability > 0"-->
-<!--                                           decoration-danger="package_stock_availability &lt;= 0"/>-->
-<!--                                    &lt;!&ndash;                                    &lt;!&ndash; Materials &ndash;&gt;&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                    <field name="product_material_id"/>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                    <field name="material_qty"/>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                    <field name="product_material_uom"/>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                    <field name="material_stock_availability"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                           decoration-success="material_stock_availability > 0"&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                                           decoration-danger="material_stock_availability &lt;= 0"/>&ndash;&gt;-->
-<!--                                </tree>-->
-<!--                            </field>-->
-<!--                        </page>-->
+                        <!--                        <page string="Materiales">-->
+                        <!--                            <field name="material_lines_ids" widget="one2many">-->
+                        <!--                                <tree editable="bottom">-->
+                        <!--                                    <field name="product_shrimp_id"/>-->
+                        <!--                                    <field name="product_package_id"/>-->
+                        <!--                                    &lt;!&ndash; Packages &ndash;&gt;-->
+                        <!--                                    <field name="package_qty"/>-->
+                        <!--                                    <field name="product_package_uom"/>-->
+                        <!--                                    <field name="reserved_stock_availability"/>-->
+                        <!--                                    <field name="package_stock_availability"-->
+                        <!--                                           decoration-success="package_stock_availability > 0"-->
+                        <!--                                           decoration-danger="package_stock_availability &lt;= 0"/>-->
+                        <!--                                    &lt;!&ndash;                                    &lt;!&ndash; Materials &ndash;&gt;&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                    <field name="product_material_id"/>&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                    <field name="material_qty"/>&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                    <field name="product_material_uom"/>&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                    <field name="material_stock_availability"&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                           decoration-success="material_stock_availability > 0"&ndash;&gt;-->
+                        <!--                                    &lt;!&ndash;                                           decoration-danger="material_stock_availability &lt;= 0"/>&ndash;&gt;-->
+                        <!--                                </tree>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
                         <page string="Movimientos de materiales">
-                            <field name="move_material_ids" context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
+                            <field name="move_material_ids"
+                                   context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
                                 <tree editable="bottom">
                                     <field name="company_id" invisible="1"/>
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="name" invisible="1"/>
                                     <field name="date_deadline" invisible="1"/>
                                     <field name="date" invisible="1"/>
-                                    <field name="state" invisible="1" />
+                                    <field name="state" invisible="1"/>
 
                                     <field name="product_id"/>
                                     <field name="product_uom_qty"/>
@@ -178,7 +181,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Servicios" >
+                        <page string="Servicios">
                             <field name="service_lines_ids" widget="one2many">
                                 <tree editable="bottom">
                                     <field name="product_service_id"/>
