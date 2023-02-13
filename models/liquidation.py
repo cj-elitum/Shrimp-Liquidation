@@ -97,6 +97,13 @@ class Liquidation(models.Model):
     iqf_yield = fields.Float(string="Rendimiento del IQF")
     cola_pounds_yield = fields.Float(string="Rendimiento de Libras COLA")
 
+    # State
+    state = fields.Selection([
+        ('draft', 'Borrador'),
+        ('order_created', 'Orden Creada'),
+        ('validated_materials', 'Materiales Validados'),
+    ], string='Estado', default='draft')
+
     # Materials
     material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
                                          string="Líneas de materiales")
@@ -114,12 +121,10 @@ class Liquidation(models.Model):
     material_location_id = fields.Many2one('stock.location', "Materials Location",
                                            compute="_compute_production_location", store=True)
 
-    # State
-    state = fields.Selection([
-        ('draft', 'Borrador'),
-        ('order_created', 'Orden Creada'),
-        ('validated_materials', 'Materiales Validados'),
-    ], string='Estado', default='draft')
+    # Services
+    service_lines_ids = fields.One2many('shrimp_liquidation.liquidation.service.line', 'liquidation_id',
+                                        string="Líneas de servicios")
+
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
