@@ -9,3 +9,9 @@ class LiquidationServiceLine(models.Model):
     product_service_id = fields.Many2one('product.product', string="Servicio", domain=[('type', '=', 'service')])
     service_qty = fields.Integer(string="Cantidad")
     provider_id = fields.Many2one('res.partner', string="Proveedor")
+
+    @api.onchange('product_service_id')
+    def _onchange_product_id(self):
+        providers = self.product_service_id.seller_ids.mapped('name')
+        self.provider_id = False
+        return {'domain': {'provider_id': [('id', 'in', providers.ids)]}}
