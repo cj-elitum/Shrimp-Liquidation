@@ -44,6 +44,7 @@
                             <field name="process"/>
                         </group>
                         <group>
+                            <field name="is_fresh"/>
                             <field name="is_reprocess"/>
                         </group>
                     </group>
@@ -127,12 +128,12 @@
                                     <field name="name" invisible="1"/>
                                     <field name="date_deadline" invisible="1"/>
                                     <field name="date" invisible="1"/>
-                                    <field name="state" invisible="1"/>
 
-                                    <field name="product_id" domain="[('categ_id','=','Material')]" />
+                                    <field name="product_id" domain="[('categ_id','=','Material')]" string="Empaque"/>
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
+                                    <field name="state"/>
                                 </tree>
                             </field>
                         </page>

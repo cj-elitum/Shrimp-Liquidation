@@ -9,7 +9,7 @@ class ProductTemplate(models.Model):
         ('pcd_iqf', 'PCD IQF'),
         ('cooked_pyd', 'Cocido PYD IQF'),
         ('pyd_block', 'PYD BLOQUE'),
-        ('fresh', 'FRESCOS'),
+        ('full', 'Entero'),
     ], string="Tipo de proceso")
 
 
