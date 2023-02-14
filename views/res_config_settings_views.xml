@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_liquidation_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.shrimp_liquidation</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="5"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Liquidation" string="Liquidation" data-key="liquidation">
+                    <h2>Materials</h2>
+                    <div class="row mt16 o_settings_container" name="qualification_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="liquidation_location_src_id"/>
+                                <div class="text-muted">
+                                    Choose the location source location for the materials
+                                </div>
+                                <div class="mt-3">
+                                <field name="liquidation_location_src_id"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="liquidation_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="res_config_settings_liquidation_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'shrimp_liquidation'}</field>
+    </record>
+
+
+</odoo>

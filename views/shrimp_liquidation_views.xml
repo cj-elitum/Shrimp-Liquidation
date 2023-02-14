@@ -41,14 +41,14 @@
                     </div>
                     <group>
                         <group>
-                            <field name="cola"/>
-                            <field name="pcd_iqf"/>
-                            <field name="cocido_pyd_iqf"/>
+                            <field name="is_shell_on"/>
+                            <field name="is_pcd_iqf"/>
+                            <field name="is_cooked_pyd_iqf"/>
                         </group>
                         <group>
-                            <field name="pyd_block"/>
-                            <field name="fresh"/>
-                            <field name="reprocesses"/>
+                            <field name="is_pyd_block"/>
+                            <field name="is_fresh"/>
+                            <field name="is_reprocess"/>
                         </group>
                     </group>
                     <group>
@@ -63,7 +63,7 @@
                             <field name="reception_date"/>
                             <field name="batch_number"/>
                             <field name="company_id"/>
-                            <field name="location_src_id" invisible="1"/>
+                            <field name="location_src_id" invisible="1" />
                             <field name="material_location_id" invisible="1"/>
                         </group>
                     </group>
@@ -74,7 +74,7 @@
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
                                     <field name="product_id"/>
                                     <field name="product_attribute_ids" widget="many2many_tags"/>
-                                    <field name="package_id"/>
+                                    <field name="package_id" />
                                     <field name="qty"/>
                                     <field name="weight"/>
                                     <field name="product_unit_cost"/>
@@ -117,26 +117,6 @@
                                     <field name="glazing_qty" widget="percentage"/>
                                     <field name="thawing_period_start_datetime"/>
                                     <field name="thawing_period_end_datetime"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Rendimiento">
-                            <group>
-                                <group>
-                                    <field name="peeled_pounds"/>
-                                    <field name="treated_pounds"/>
-                                    <field name="cooked_pounds"/>
-                                    <field name="decorated_pounds"/>
-                                    <field name="pound_before_glazing"/>
-                                    <field name="packaged_pounds"/>
-                                </group>
-                                <group>
-                                    <field name="peeling_yield" widget="percentage"/>
-                                    <field name="treated_yield" widget="percentage"/>
-                                    <field name="cooked_yield" widget="percentage"/>
-                                    <field name="decorated_yield" widget="percentage"/>
-                                    <field name="iqf_yield" widget="percentage"/>
-                                    <field name="cola_pounds_yield" widget="percentage"/>
                                 </group>
                             </group>
                         </page>
@@ -189,6 +169,26 @@
                                     <field name="provider_id"/>
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Rendimiento">
+                            <group>
+                                <group>
+                                    <field name="peeled_pounds"/>
+                                    <field name="treated_pounds"/>
+                                    <field name="cooked_pounds"/>
+                                    <field name="decorated_pounds"/>
+                                    <field name="pound_before_glazing"/>
+                                    <field name="packaged_pounds"/>
+                                </group>
+                                <group>
+                                    <field name="peeling_yield" widget="percentage"/>
+                                    <field name="treated_yield" widget="percentage"/>
+                                    <field name="cooked_yield" widget="percentage"/>
+                                    <field name="decorated_yield" widget="percentage"/>
+                                    <field name="iqf_yield" widget="percentage"/>
+                                    <field name="cola_pounds_yield" widget="percentage"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>

@@ -41,12 +41,12 @@ class Liquidation(models.Model):
             liquidation.material_location_id = location_by_company.get(liquidation.company_id.id)[0]
 
     name = fields.Char(string='Name', required=True)
-    cola = fields.Boolean(string="COLA")
-    pcd_iqf = fields.Boolean(string="PCD IQF")
-    cocido_pyd_iqf = fields.Boolean(string="COCIDO PYD IQF")
-    pyd_block = fields.Boolean(string="PYD BLOQUE")
-    fresh = fields.Boolean(string="FRESCOS")
-    reprocesses = fields.Boolean(string="REPROCESOS")
+    is_shell_on = fields.Boolean(string="COLA")
+    is_pcd_iqf = fields.Boolean(string="PCD IQF")
+    is_cooked_pyd_iqf = fields.Boolean(string="COCIDO PYD IQF")
+    is_pyd_block = fields.Boolean(string="PYD BLOQUE")
+    is_fresh = fields.Boolean(string="FRESCOS")
+    is_reprocess = fields.Boolean(string="REPROCESOS")
 
     # Header
     proccess_plant = fields.Char(string="Planta de proceso")
@@ -185,3 +185,8 @@ class Liquidation(models.Model):
                     "Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
                          purchase_order.id, purchase_order.name))
             self.message_post(body=_("Estado: PO de Servicios Creada"))
+
+
+
+
+
