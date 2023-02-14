@@ -41,13 +41,9 @@
                     </div>
                     <group>
                         <group>
-                            <field name="is_shell_on"/>
-                            <field name="is_pcd_iqf"/>
-                            <field name="is_cooked_pyd_iqf"/>
+                            <field name="process"/>
                         </group>
                         <group>
-                            <field name="is_pyd_block"/>
-                            <field name="is_fresh"/>
                             <field name="is_reprocess"/>
                         </group>
                     </group>
@@ -70,9 +66,10 @@
                     <notebook>
                         <page string="Clasificacion">
                             <field name="liquidity_lines_ids" widget="one2many" nolabel="1"
-                                   attrs="{'readonly': [('state', '=', 'order_created')]}">
+                                   attrs="{'readonly': [('state', '=', 'order_created')]}"
+                            >
                                 <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
-                                    <field name="product_id"/>
+                                    <field name="product_id" domain="[('id', 'in', suitable_product_ids)]"/>
                                     <field name="product_attribute_ids" widget="many2many_tags"/>
                                     <field name="package_id" />
                                     <field name="qty"/>
@@ -80,6 +77,7 @@
                                     <field name="product_unit_cost"/>
                                     <field name="total_weight"/>
                                     <field name="product_uom"/>
+                                    <field name="suitable_product_ids" invisible="1"/>
                                 </tree>
                             </field>
                             <group name="note_group" col="6" class="mt-2 mt-md-0">
@@ -120,28 +118,6 @@
                                 </group>
                             </group>
                         </page>
-                        <!--                        <page string="Materiales">-->
-                        <!--                            <field name="material_lines_ids" widget="one2many">-->
-                        <!--                                <tree editable="bottom">-->
-                        <!--                                    <field name="product_shrimp_id"/>-->
-                        <!--                                    <field name="product_package_id"/>-->
-                        <!--                                    &lt;!&ndash; Packages &ndash;&gt;-->
-                        <!--                                    <field name="package_qty"/>-->
-                        <!--                                    <field name="product_package_uom"/>-->
-                        <!--                                    <field name="reserved_stock_availability"/>-->
-                        <!--                                    <field name="package_stock_availability"-->
-                        <!--                                           decoration-success="package_stock_availability > 0"-->
-                        <!--                                           decoration-danger="package_stock_availability &lt;= 0"/>-->
-                        <!--                                    &lt;!&ndash;                                    &lt;!&ndash; Materials &ndash;&gt;&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                    <field name="product_material_id"/>&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                    <field name="material_qty"/>&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                    <field name="product_material_uom"/>&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                    <field name="material_stock_availability"&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                           decoration-success="material_stock_availability > 0"&ndash;&gt;-->
-                        <!--                                    &lt;!&ndash;                                           decoration-danger="material_stock_availability &lt;= 0"/>&ndash;&gt;-->
-                        <!--                                </tree>-->
-                        <!--                            </field>-->
-                        <!--                        </page>-->
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
                                    context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
@@ -153,11 +129,10 @@
                                     <field name="date" invisible="1"/>
                                     <field name="state" invisible="1"/>
 
-                                    <field name="product_id"/>
+                                    <field name="product_id" domain="[('categ_id','=','Material')]" />
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
-                                    <field name="location_dest_id"/>
                                 </tree>
                             </field>
                         </page>

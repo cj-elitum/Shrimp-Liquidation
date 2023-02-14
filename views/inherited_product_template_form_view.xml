@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='pricing']" position="after">
-                <label for="size"/>
+                <label for="process_type"/>
                 <div>
-                    <field name="size" string="Size"/>
+                    <field name="process_type" />
                 </div>
             </xpath>
         </field>

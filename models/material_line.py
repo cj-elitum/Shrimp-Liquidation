@@ -11,7 +11,7 @@ class MaterialLine(models.Model):
 
     # Packages
     product_package_id = fields.Many2one('product.template', string="Empaques",
-                                         domain=[('purchase_ok', '=', True), ('categ_id.name', '=', 'Empaques')])
+                                         domain=[('purchase_ok', '=', True), ('categ_id.name', '=', 'Empaques')],required=True)
     package_qty = fields.Float(string="Cantidad")
     product_package_uom = fields.Many2one('uom.uom', string="UoM", related="product_package_id.uom_id")
     package_stock_availability = fields.Float(string="Cantidad inventario", compute="_compute_stock_availability", readonly=True)

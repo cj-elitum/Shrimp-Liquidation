@@ -6,7 +6,8 @@ class LiquidationLine(models.Model):
     _description = 'Package Line'
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion", ondelete='cascade')
-    product_id = fields.Many2one('product.product', string="Producto")
+    product_id = fields.Many2one('product.product', string="Producto", required=True)
+    suitable_product_ids = fields.Many2many('product.product', compute="_compute_suitable_product_ids")
     product_unit_cost = fields.Float(string="Costo unitario", related="product_id.standard_price")
     product_uom = fields.Many2one('uom.uom', string="UoM", related="product_id.uom_id")
     package_id = fields.Many2one('shrimp_liquidation.liquidation.package', string="Empaque")
@@ -16,7 +17,6 @@ class LiquidationLine(models.Model):
     qty = fields.Integer(string="Cantidad")
     weight = fields.Float(string="Peso")
     total_weight = fields.Float(string="Peso total", compute="_compute_total_weight", store=True, readonly=True)
-
 
     @api.depends('qty', 'weight')
     def _compute_total_weight(self):
@@ -28,22 +28,8 @@ class LiquidationLine(models.Model):
         if self.product_id:
             self.qty = 1
 
-    # @api.onchange('liquidation_id.is_shell_on')
-    # def _onchange_is_shell_on(self):
-    #     if self.liquidation_id.is_shell_on:
-    #         # set the domain for product_id based on is_shell_on being checked
-    #         self.product_id = fields.Many2one('product.product', string="Producto",
-    #                                           domain=[('categ_id.name', '=', 'Cola')])
-    #     else:
-    #         self.product_id = fields.Many2one('product.product', string="Producto",
-    #                                           domain=[])
-
-    @api.depends('liquidation_id.is_shell_on')
-    def _compute_product_id_domain(self):
-        for record in self:
-            if record.liquidation_id.is_shell_on:
-                record.product_id = fields.Many2one('product.product', string="Producto",
-                                                    domain=[('categ_id.name', '=', 'Cola')])
-            else:
-                record.product_id = fields.Many2one('product.product', string="Producto",
-                                                    domain=[])
+    @api.depends('liquidation_id.process')
+    def _compute_suitable_product_ids(self):
+        for line in self:
+            process_type = line.liquidation_id.process
+            line.suitable_product_ids = self.env['product.product'].search([('process_type', '=', process_type)])

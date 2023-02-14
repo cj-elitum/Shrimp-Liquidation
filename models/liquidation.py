@@ -41,11 +41,14 @@ class Liquidation(models.Model):
             liquidation.material_location_id = location_by_company.get(liquidation.company_id.id)[0]
 
     name = fields.Char(string='Name', required=True)
-    is_shell_on = fields.Boolean(string="COLA")
-    is_pcd_iqf = fields.Boolean(string="PCD IQF")
-    is_cooked_pyd_iqf = fields.Boolean(string="COCIDO PYD IQF")
-    is_pyd_block = fields.Boolean(string="PYD BLOQUE")
-    is_fresh = fields.Boolean(string="FRESCOS")
+    process = fields.Selection([
+        ('shell_on', 'Colas'),
+        ('pcd_iqf', 'PCD IQF'),
+        ('cooked_pyd', 'Cocido PYD IQF'),
+        ('pyd_block', 'PYD BLOQUE'),
+        ('fresh', 'Frescos'),
+    ], string="Proceso")
+
     is_reprocess = fields.Boolean(string="REPROCESOS")
 
     # Header
