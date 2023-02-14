@@ -167,7 +167,18 @@ class Liquidation(models.Model):
 
     def action_validate_materials(self):
         self.state = 'validated_materials'
-
+        for line in self.move_material_ids:
+            product = line.product_id
+            quantity = line.product_uom_qty
+            stock_move = line
+            stock_move._action_confirm()
+            stock_move._action_assign()
+            stock_move._action_done()
+            for move_line in stock_move.move_line_ids:
+                if move_line.product_id == product:
+                    move_line.write({'qty_done': quantity})
+                    move_line._action_done()
+                    break
 
     def action_generate_services(self):
         for service in self.service_lines_ids:
