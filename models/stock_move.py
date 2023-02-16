@@ -7,9 +7,9 @@ class StockMove(models.Model):
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion", ondelete='cascade')
 
-    # def _show_details_in_draft(self):
-    #     self.ensure_one()
-    #     if self.liquidation_id and self.liquidation_id.state != 'draft':
-    #         return True
-    #     else:
-    #         return super()._show_details_in_draft()
+    def action_show_details(self):
+        self.ensure_one()
+        action = super(StockMove, self).action_show_details()
+        if self.liquidation_id:
+            action['context']['show_destination_location'] = False
+        return action

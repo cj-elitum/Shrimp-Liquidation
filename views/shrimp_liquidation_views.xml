@@ -30,7 +30,8 @@
                             type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','order_created')]}"/>
                     <button name="action_confirm" string="Confirmar Materiales" type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','used_services')]}"/>
                     <button name="action_assign" string="Comprobar disponibilidad" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','confirm_materials')]}"/>
-                    <button name="action_draft" string="Draft" type="object"/>
+                    <button name="action_unreserve" type="object" string="Anular reserva" attrs="{'invisible':[('state','!=','confirm_materials')]}" />
+                    <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -99,7 +100,6 @@
                                 <group>
                                     <field name="client"/>
                                     <field name="production_order"/>
-                                    <field name="batch_amount"/>
                                     <field name="expenses"/>
                                     <field name="final_batch"/>
                                     <field name="damaged_product"/>
@@ -114,8 +114,6 @@
                                     <field name="process_days"/>
                                     <field name="requested_glazing_qty" widget="percentage"/>
                                     <field name="glazing_qty" widget="percentage"/>
-                                    <field name="thawing_period_start_datetime"/>
-                                    <field name="thawing_period_end_datetime"/>
                                 </group>
                             </group>
                         </page>
@@ -164,6 +162,8 @@
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
                                     <field name="forecast_availability" widget="forecast_widget"/>
+                                    <field name="reserved_availability"/>
+                                    <field name="state"/>
                                     <button name="action_show_details" type="object" icon="fa-list" context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('show_details_visible', '=', False)]}" options="{&quot;warn&quot;: true}"/>
                                 </tree>
                             </field>

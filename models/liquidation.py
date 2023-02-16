@@ -70,7 +70,6 @@ class Liquidation(models.Model):
     # Information
     client = fields.Many2one('res.partner', string="Cliente")
     production_order = fields.Char(string="Orden de producción")
-    batch_amount = fields.Integer(string="Cantidad de lote")
     expenses = fields.Float(string="Egresos")
     final_batch = fields.Char(string="Lote final")
     damaged_product = fields.Float(string="Material dañado")
@@ -83,8 +82,6 @@ class Liquidation(models.Model):
     process_days = fields.Integer(string="Días de proceso")
     requested_glazing_qty = fields.Float(string="% de glaseado solicitada")
     glazing_qty = fields.Float(string="% de glaseado real")
-    thawing_period_start_datetime = fields.Datetime(string="Inicio de periodo de descongelación")
-    thawing_period_end_datetime = fields.Datetime(string="Fin de periodo de descongelación")
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
 
     # Rendimiento
@@ -170,6 +167,15 @@ class Liquidation(models.Model):
     def action_assign(self):
         for liquidation in self:
             liquidation.move_material_ids._action_assign()
+        return True
+
+    def do_unreserve(self):
+        self.move_material_ids.filtered(lambda x: x.state not in ('done', 'cancel'))._do_unreserve()
+        return True
+
+    def action_unreserve(self):
+        self.ensure_one()
+        self.do_unreserve()
         return True
 
     def action_confirm(self):
