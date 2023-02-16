@@ -26,10 +26,10 @@
                 <header>
                     <button name="generate_purchase_order" string="Generate Order"
                             type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                    <button name="action_validate_materials" string="Validate Materials"
-                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','order_created')]}"/>
                     <button name="action_generate_services" string="Generate Services"
-                            type="object" class="oe_highlight" />
+                            type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','order_created')]}"/>
+                    <button name="action_confirm" string="Confirmar Materiales" type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','used_services')]}"/>
+                    <button name="action_assign" string="Comprobar disponibilidad" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','confirm_materials')]}"/>
                     <button name="action_draft" string="Draft" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -60,19 +60,19 @@
                             <field name="reception_date"/>
                             <field name="batch_number"/>
                             <field name="company_id"/>
-                            <field name="location_src_id" invisible="1" />
+                            <field name="location_src_id" invisible="1"/>
                             <field name="material_location_id" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Clasificacion">
                             <field name="liquidity_lines_ids" widget="one2many" nolabel="1"
-                                   attrs="{'readonly': [('state', '=', 'order_created')]}"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
                             >
-                                <tree editable="bottom" decoration-muted="parent.state == 'order_created'">
+                                <tree editable="bottom" decoration-muted="parent.state != 'draft'">
                                     <field name="product_id" domain="[('id', 'in', suitable_product_ids)]"/>
                                     <field name="product_attribute_ids" widget="many2many_tags"/>
-                                    <field name="package_id" />
+                                    <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
                                     <field name="product_unit_cost"/>
@@ -119,6 +119,15 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="Servicios">
+                            <field name="service_lines_ids" widget="one2many" attrs="{'readonly': [('state', '!=', 'order_created')]}">
+                                <tree editable="bottom" decoration-muted="parent.state != 'order_created'">
+                                    <field name="product_service_id"/>
+                                    <field name="service_qty"/>
+                                    <field name="provider_id"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
                                    context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
@@ -128,21 +137,34 @@
                                     <field name="name" invisible="1"/>
                                     <field name="date_deadline" invisible="1"/>
                                     <field name="date" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="show_details_visible" invisible="1"/>
+
+                                    <field name="move_line_ids" invisible="1">
+                                        <tree>
+                                            <field name="lot_id" invisible="1"/>
+                                            <field name="owner_id" invisible="1"/>
+                                            <field name="package_id" invisible="1"/>
+                                            <field name="result_package_id" invisible="1"/>
+                                            <field name="location_id" invisible="1"/>
+                                            <field name="location_dest_id" invisible="1"/>
+                                            <field name="qty_done" invisible="1"/>
+                                            <field name="product_id" invisible="1"/>
+                                            <field name="product_uom_id" invisible="1"/>
+                                            <field name="product_uom_qty" invisible="1"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="move_id" invisible="1"/>
+                                            <field name="id" invisible="1"/>
+                                        </tree>
+                                    </field>
 
                                     <field name="product_id" domain="[('categ_id','=','Material')]" string="Empaque"/>
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
-                                    <field name="state"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Servicios">
-                            <field name="service_lines_ids" widget="one2many">
-                                <tree editable="bottom">
-                                    <field name="product_service_id"/>
-                                    <field name="service_qty"/>
-                                    <field name="provider_id"/>
+                                    <field name="forecast_availability" widget="forecast_widget"/>
+                                    <button name="action_show_details" type="object" icon="fa-list" context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('show_details_visible', '=', False)]}" options="{&quot;warn&quot;: true}"/>
                                 </tree>
                             </field>
                         </page>

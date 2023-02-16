@@ -104,8 +104,10 @@ class Liquidation(models.Model):
     # State
     state = fields.Selection([
         ('draft', 'Borrador'),
-        ('order_created', 'Orden Creada'),
-        ('validated_materials', 'Materiales Validados'),
+        ('order_created', 'Clasificado'),
+        ('used_services', 'Ordenes de Servicios'),
+        ('confirm_materials', 'Materiales confirmados'),
+        ('done', 'Hecho'),
     ], string='Estado', default='draft')
 
     # Materials
@@ -165,22 +167,19 @@ class Liquidation(models.Model):
     def action_draft(self):
         self.state = 'draft'
 
-    def action_validate_materials(self):
-        self.state = 'validated_materials'
-        for line in self.move_material_ids:
-            product = line.product_id
-            quantity = line.product_uom_qty
-            stock_move = line
-            stock_move._action_confirm()
-            stock_move._action_assign()
-            stock_move._action_done()
-            for move_line in stock_move.move_line_ids:
-                if move_line.product_id == product:
-                    move_line.write({'qty_done': quantity})
-                    move_line._action_done()
-                    break
+    def action_assign(self):
+        for liquidation in self:
+            liquidation.move_material_ids._action_assign()
+        return True
+
+    def action_confirm(self):
+        self.state = 'confirm_materials'
+        for liquidation in self:
+            liquidation.move_material_ids._action_confirm()
+        return True
 
     def action_generate_services(self):
+        self.state = 'used_services'
         for service in self.service_lines_ids:
             purchase_order = self.env['purchase.order'].create({
                 'partner_id': service.provider_id.id,
