@@ -28,6 +28,13 @@ class Liquidation(models.Model):
             location = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1).lot_stock_id
         return location and location.id or False
 
+    @api.model
+    def _get_default_picking_type(self):
+        company_id = self.env.context.get('default_company_id', self.env.company.id)
+        return self.env['stock.picking.type'].search([('code', '=', 'liquidation'),
+                                                      ('warehouse_id.company_id', '=', company_id)
+                                                      ], limit=1).id
+
     @api.depends('company_id')
     def _compute_production_location(self):
         if not self.company_id:
@@ -123,6 +130,11 @@ class Liquidation(models.Model):
 
     material_location_id = fields.Many2one('stock.location', "Materials Location",
                                            compute="_compute_production_location", store=True)
+    reserve_visible = fields.Boolean(compute='_compute_unreserve_visible')
+    unreserve_visible = fields.Boolean(compute='_compute_unreserve_visible')
+    picking_type_id = fields.Many2one('stock.picking.type', 'Operation Type', required=True,
+                                      default=_get_default_picking_type, check_company=True,
+                                      domain="[('code', '=', 'liquidation'), ('company_id', '=', company_id)]")
 
     # Services
     service_lines_ids = fields.One2many('shrimp_liquidation.liquidation.service.line', 'liquidation_id',
@@ -183,6 +195,20 @@ class Liquidation(models.Model):
         for liquidation in self:
             liquidation.move_material_ids._action_confirm()
         return True
+
+    @api.depends('move_material_ids', 'state', 'move_material_ids.product_uom_qty')
+    def _compute_unreserve_visible(self):
+        for liquidation in self:
+            already_reserved = liquidation.state not in ('done') and liquidation.mapped('move_material_ids.move_line_ids')
+            any_quantity_done = any(move.quantity_done > 0 for move in liquidation.move_material_ids)
+
+            liquidation.unreserve_visible = not any_quantity_done and already_reserved
+            liquidation.reserve_visible = liquidation.state in ('confirm_materials') and any(move.product_uom_qty and move.state in ['confirmed', 'partially_available'] for move in liquidation.move_material_ids)
+
+    @api.onchange('picking_type_id')
+    def onchange_picking_type(self):
+        self.move_material_ids.update({'picking_type_id': self.picking_type_id})
+
 
     def action_generate_services(self):
         self.state = 'used_services'

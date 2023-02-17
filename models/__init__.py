@@ -7,3 +7,4 @@ from . import inherited_purchase_order
 from . import stock_move
 from . import liquidation_service_line
 from . import res_config_settings
+from . import stock_picking

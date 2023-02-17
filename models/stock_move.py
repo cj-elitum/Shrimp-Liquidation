@@ -13,3 +13,9 @@ class StockMove(models.Model):
         if self.liquidation_id:
             action['context']['show_destination_location'] = False
         return action
+
+    @api.model
+    def _consuming_picking_types(self):
+        res = super()._consuming_picking_types()
+        res.append('liquidation')
+        return res
