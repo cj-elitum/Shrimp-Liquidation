@@ -27,14 +27,24 @@
                     <button name="generate_purchase_order" string="Generate Order"
                             type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="action_generate_services" string="Generate Services"
-                            type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','order_created')]}"/>
-                    <button name="action_confirm" string="Confirmar Materiales" type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','used_services')]}"/>
-                    <button name="action_assign" string="Comprobar disponibilidad" type="object" class="oe_highlight" attrs="{'invisible':[('reserve_visible', '=', False)]}"/>
-                    <button name="action_unreserve" type="object" string="Anular reserva" attrs="{'invisible':[('unreserve_visible', '=', False)]}" />
+                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','order_created')]}"/>
+                    <button name="action_confirm" string="Confirmar Materiales" type="object" class="oe_highlight"
+                            attrs="{'invisible':[('state','!=','used_services')]}"/>
+                    <button name="action_assign" string="Comprobar disponibilidad" type="object" class="oe_highlight"
+                            attrs="{'invisible':[('reserve_visible', '=', False)]}"/>
+                    <button name="action_unreserve" type="object" string="Anular reserva"
+                            attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <field name="shrimps_purchase_order_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
+                                attrs="{'invisible': [('shrimps_purchase_order_id', '=', '')]}">
+                            <span>PO Camarones</span>
+                        </button>
+                    </div>
                     <field name="reserve_visible" invisible="1"/>
                     <field name="unreserve_visible" invisible="1"/>
                     <div class="oe_title">
@@ -121,7 +131,8 @@
                             </group>
                         </page>
                         <page string="Servicios">
-                            <field name="service_lines_ids" widget="one2many" attrs="{'readonly': [('state', '!=', 'order_created')]}">
+                            <field name="service_lines_ids" widget="one2many"
+                                   attrs="{'readonly': [('state', '!=', 'order_created')]}">
                                 <tree editable="bottom" decoration-muted="parent.state != 'order_created'">
                                     <field name="product_service_id"/>
                                     <field name="service_qty"/>
@@ -166,9 +177,12 @@
                                     <field name="location_id"/>
                                     <field name="state"/>
                                     <field name="picking_type_id"/>
-                                    <field name="forecast_availability" force-save="1" string="Reservado" />
+                                    <field name="forecast_availability" force-save="1" string="Reservado"/>
 
-                                    <button name="action_show_details" type="object" icon="fa-list" context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('show_details_visible', '=', False)]}" options="{&quot;warn&quot;: true}"/>
+                                    <button name="action_show_details" type="object" icon="fa-list"
+                                            context="{'default_product_uom_qty': 0}"
+                                            attrs="{'invisible': [('show_details_visible', '=', False)]}"
+                                            options="{&quot;warn&quot;: true}"/>
                                 </tree>
                             </field>
                         </page>

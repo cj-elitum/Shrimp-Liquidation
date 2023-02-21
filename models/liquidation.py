@@ -68,11 +68,11 @@ class Liquidation(models.Model):
     received_pounds = fields.Float(string="Libras recibidas")
     batch_number = fields.Char(string="Número de lote")
 
-    # Packaged Product Lines
+    # Shrimp classification
     liquidity_lines_ids = fields.One2many('shrimp_liquidation.liquidation.line', 'liquidation_id',
                                           string="Líneas de producto empaquetado")
     total_packaged_weight = fields.Float(string="Peso total empaquetado", compute="_compute_total_packaged_weight")
-    purchase_order_ids = fields.One2many('purchase.order', 'liquidation_id', string="Ordenes de compra")
+    shrimps_purchase_order_id = fields.Many2one('purchase.order', string="Orden de compra de camarón")
 
     # Information
     client = fields.Many2one('res.partner', string="Cliente")
@@ -167,11 +167,19 @@ class Liquidation(models.Model):
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,
             })
+
+        self.write({'shrimps_purchase_order_id': purchase_order.id})
         # Post a message in the chatter with the generated PO
         self.message_post(
             body=_("Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
                 purchase_order.id, purchase_order.name))
         self.message_post(body=_("Estado: Borrador -> Orden Creada"))
+
+    def action_view_shrimp_order(self):
+        action = self.env.ref('purchase.purchase_rfq').read()[0]
+        action['views'] = [(self.env.ref('purchase.purchase_order_form').id, 'form')]
+        action['res_id'] = self.shrimps_purchase_order_id.id
+        return action
 
     def action_draft(self):
         self.state = 'draft'
