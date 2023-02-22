@@ -39,10 +39,15 @@
                 </header>
                 <sheet>
                     <field name="shrimps_purchase_order_id" invisible="1"/>
+                    <field name="service_order_ids" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
                                 attrs="{'invisible': [('shrimps_purchase_order_id', '=', False)]}">
                             <span>PO Camarones</span>
+                        </button>
+                        <button name="action_view_services" type="object" class="oe_stat_button" icon="fa-truck"
+                                attrs="{'invisible': [('service_order_ids', '=', [])]}">
+                            <span>PO Servicios</span>
                         </button>
                     </div>
                     <field name="reserve_visible" invisible="1"/>

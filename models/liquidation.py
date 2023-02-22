@@ -72,7 +72,7 @@ class Liquidation(models.Model):
     liquidity_lines_ids = fields.One2many('shrimp_liquidation.liquidation.line', 'liquidation_id',
                                           string="Líneas de producto empaquetado")
     total_packaged_weight = fields.Float(string="Peso total empaquetado", compute="_compute_total_packaged_weight")
-    shrimps_purchase_order_id = fields.Many2one('purchase.order', string="Orden de compra de camarón")
+    shrimps_purchase_order_id = fields.Many2one('purchase.order', string="Orden de compra de camarón", copy=False)
 
     # Information
     client = fields.Many2one('res.partner', string="Cliente")
@@ -114,10 +114,6 @@ class Liquidation(models.Model):
         ('done', 'Hecho'),
     ], string='Estado', default='draft')
 
-    # Materials
-    material_lines_ids = fields.One2many('shrimp_liquidation.material.line', 'liquidation_id',
-                                         string="Líneas de materiales")
-
     # Material movements
     move_material_ids = fields.One2many('stock.move', 'liquidation_id', string="Movimientos")
     location_src_id = fields.Many2one(
@@ -139,6 +135,8 @@ class Liquidation(models.Model):
     # Services
     service_lines_ids = fields.One2many('shrimp_liquidation.liquidation.service.line', 'liquidation_id',
                                         string="Líneas de servicios")
+
+    service_order_ids = fields.One2many('purchase.order', 'service_liquidation_id', string="Ordenes de servicio", copy=False)
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
@@ -181,6 +179,18 @@ class Liquidation(models.Model):
         action['res_id'] = self.shrimps_purchase_order_id.id
         return action
 
+    def action_view_services(self):
+        # This functionn returns an action that display existing purchase orders of services for current liquidation.
+        # If only 1 record exists, show the form view directly
+        action = self.env.ref('purchase.purchase_rfq').read()[0]
+        if len(self.service_order_ids) == 1:
+            action['views'] = [(self.env.ref('purchase.purchase_order_form').id, 'form')]
+            action['res_id'] = self.service_order_ids.id
+        else:
+            action['domain'] = [('id', 'in', self.service_order_ids.ids)]
+
+        return action
+
     def action_draft(self):
         self.state = 'draft'
 
@@ -217,7 +227,6 @@ class Liquidation(models.Model):
     def onchange_picking_type(self):
         self.move_material_ids.update({'picking_type_id': self.picking_type_id})
 
-
     def action_generate_services(self):
         self.state = 'used_services'
         for service in self.service_lines_ids:
@@ -233,6 +242,8 @@ class Liquidation(models.Model):
                 'product_qty': service.service_qty,
                 'order_id': purchase_order.id,
             })
+
+            self.service_order_ids = [(4, purchase_order.id)]
 
             # Post a message in the chatter with the generated PO
             self.message_post(
