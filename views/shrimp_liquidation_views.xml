@@ -43,11 +43,11 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
                                 attrs="{'invisible': [('shrimps_purchase_order_id', '=', False)]}">
-                            <span>PO Camarones</span>
+                            <span>Camarones</span>
                         </button>
                         <button name="action_view_services" type="object" class="oe_stat_button" icon="fa-truck"
                                 attrs="{'invisible': [('service_order_ids', '=', [])]}">
-                            <span>PO Servicios</span>
+                             <field name="service_count" widget="statinfo" string="Servicios" help="Ordenes de Compra para los servicios"/>
                         </button>
                     </div>
                     <field name="reserve_visible" invisible="1"/>
@@ -147,7 +147,7 @@
                         </page>
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
-                                   context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id}">
+                                   context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id, 'default_picking_type_id': picking_type_id}">
                                 <tree editable="bottom">
                                     <field name="company_id" invisible="1"/>
                                     <field name="product_uom_category_id" invisible="1"/>
@@ -176,18 +176,17 @@
                                         </tree>
                                     </field>
 
-                                    <field name="product_id" domain="[('categ_id','=','Material')]" string="Empaque"/>
+                                    <field name="product_id" domain="[('categ_id','=','Material')]" string="Materiales"/>
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
-                                    <field name="state"/>
                                     <field name="picking_type_id"/>
-                                    <field name="forecast_availability" force-save="1" string="Reservado"/>
+                                    <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"  />
+                                    <field name="state"/>
 
                                     <button name="action_show_details" type="object" icon="fa-list"
                                             context="{'default_product_uom_qty': 0}"
-                                            attrs="{'invisible': [('show_details_visible', '=', False)]}"
-                                            options="{&quot;warn&quot;: true}"/>
+                                           />
                                 </tree>
                             </field>
                         </page>

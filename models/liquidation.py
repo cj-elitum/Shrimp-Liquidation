@@ -137,6 +137,7 @@ class Liquidation(models.Model):
                                         string="Líneas de servicios")
 
     service_order_ids = fields.One2many('purchase.order', 'service_liquidation_id', string="Ordenes de servicio", copy=False)
+    service_count = fields.Integer(string="Servicios", compute="_compute_service_count")
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
@@ -191,6 +192,10 @@ class Liquidation(models.Model):
 
         return action
 
+    def _compute_service_count(self):
+        for record in self:
+            record.service_count = len(record.service_order_ids)
+
     def action_draft(self):
         self.state = 'draft'
 
@@ -211,7 +216,7 @@ class Liquidation(models.Model):
     def action_confirm(self):
         self.state = 'confirm_materials'
         for liquidation in self:
-            liquidation.move_material_ids._action_confirm()
+            liquidation.move_material_ids._action_confirm(merge=False)
         return True
 
     @api.depends('move_material_ids', 'state', 'move_material_ids.product_uom_qty')
@@ -251,3 +256,6 @@ class Liquidation(models.Model):
                     "Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
                          purchase_order.id, purchase_order.name))
             self.message_post(body=_("Estado: PO de Servicios Creada"))
+
+
+
