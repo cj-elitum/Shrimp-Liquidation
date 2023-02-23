@@ -111,7 +111,7 @@ class Liquidation(models.Model):
         ('order_created', 'Clasificado'),
         ('used_services', 'Ordenes de Servicios'),
         ('confirm_materials', 'Materiales confirmados'),
-        ('done', 'Hecho'),
+        ('done', 'Realizado'),
     ], string='Estado', default='draft')
 
     # Material movements
@@ -217,6 +217,38 @@ class Liquidation(models.Model):
         self.state = 'confirm_materials'
         for liquidation in self:
             liquidation.move_material_ids._action_confirm(merge=False)
+        return True
+
+    def action_done(self):
+        res = self._pre_mark_done()
+        if res is not True:
+            return res
+
+        liquidations_not_to_backorder = self
+        liquidations_not_to_backorder._post_inventory()
+
+        self.write({'state': 'done'})
+        self.message_post(body=_("Estado: Confirmado -> Realizado"))
+        self.liquidation.message_post(body=_("Materiales consumidos"))
+
+    def _post_inventory(self):
+        for order in self:
+            moves_not_to_do = order.move_material_ids.filtered(lambda x: x.state == 'done')
+            moves_to_do = order.move_material_ids.filtered(lambda x: x.state not in ('done', 'cancel'))
+
+            moves_to_do._action_done()
+            moves_to_do = order.move_material_ids.filtered(lambda x: x.state == 'done') - moves_not_to_do
+
+            consumed_moves_lines = moves_to_do.mapped('move_line_ids')
+            order.move_material_ids.move_line_ids.consume_line_ids = [(6, 0, consumed_moves_lines.ids)]
+
+        return True
+
+    def _pre_mark_done(self):
+        for liquidation in self:
+            if not any(self.move_material_ids.mapped('quantity_done')):
+                raise UserError(_("You must indicate the quantity to be consumed from your materials."))
+
         return True
 
     @api.depends('move_material_ids', 'state', 'move_material_ids.product_uom_qty')

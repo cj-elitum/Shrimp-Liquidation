@@ -34,6 +34,7 @@
                             attrs="{'invisible':[('reserve_visible', '=', False)]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
+                    <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}" />
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -43,7 +44,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
                                 attrs="{'invisible': [('shrimps_purchase_order_id', '=', False)]}">
-                            <span>Camarones</span>
+                            <span>Orden Camaron</span>
                         </button>
                         <button name="action_view_services" type="object" class="oe_stat_button" icon="fa-truck"
                                 attrs="{'invisible': [('service_order_ids', '=', [])]}">
@@ -147,8 +148,9 @@
                         </page>
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
-                                   context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id, 'default_picking_type_id': picking_type_id}">
-                                <tree editable="bottom">
+                                   context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id, 'default_picking_type_id': picking_type_id}"
+                                   attrs="{'readonly': [('state', '=', 'done')]}">
+                                <tree editable="bottom" decoration-muted="parent.state not in ('used_services','confirm_materials')">
                                     <field name="company_id" invisible="1"/>
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="name" invisible="1"/>
@@ -183,6 +185,8 @@
                                     <field name="picking_type_id"/>
                                     <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"  />
                                     <field name="state"/>
+                                    <field name="quantity_done"/>
+                                    <field name="product_qty"/>
 
                                     <button name="action_show_details" type="object" icon="fa-list"
                                             context="{'default_product_uom_qty': 0}"
