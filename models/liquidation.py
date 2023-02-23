@@ -54,7 +54,9 @@ class Liquidation(models.Model):
         ('cooked_pyd', 'Cocido PYD IQF'),
         ('pyd_block', 'PYD BLOQUE'),
     ], string="Proceso")
-    name = fields.Char(string='Name', required=True)
+
+    name = fields.Char(string='Name', readonly=True, required=True, copy=False, default='New')
+    sequence = fields.Char(string='Sequence', readonly=True)
 
     is_reprocess = fields.Boolean(string="Reproceso")
     is_fresh = fields.Boolean(string="Fresco")
@@ -138,6 +140,12 @@ class Liquidation(models.Model):
 
     service_order_ids = fields.One2many('purchase.order', 'service_liquidation_id', string="Ordenes de servicio", copy=False)
     service_count = fields.Integer(string="Servicios", compute="_compute_service_count")
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('shrimp_liquidation.liquidation.sequence') or _('New')
+        return super(Liquidation, self).create(vals)
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
@@ -229,7 +237,7 @@ class Liquidation(models.Model):
 
         self.write({'state': 'done'})
         self.message_post(body=_("Estado: Confirmado -> Realizado"))
-        self.liquidation.message_post(body=_("Materiales consumidos"))
+        self.message_post(body=_("Materiales consumidos"))
 
     def _post_inventory(self):
         for order in self:
