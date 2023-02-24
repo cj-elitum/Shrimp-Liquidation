@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class Liquidation(models.Model):
@@ -64,8 +65,8 @@ class Liquidation(models.Model):
     # Header
     proccess_plant = fields.Char(string="Planta de proceso")
     provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
-    reported_pounds = fields.Float(string="Libras reportadas")
-    classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds")
+    reported_pounds = fields.Float(string="Libras reportadas", required=True)
+    classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds", required=True)
     reception_date = fields.Date(string="Fecha de recepción")
     received_pounds = fields.Float(string="Libras recibidas")
     batch_number = fields.Char(string="Número de lote")
@@ -237,7 +238,7 @@ class Liquidation(models.Model):
 
         self.write({'state': 'done'})
         self.message_post(body=_("Estado: Confirmado -> Realizado"))
-        self.   message_post(body=_("Materiales consumidos"))
+        self.message_post(body=_("Materiales consumidos"))
 
     def _post_inventory(self):
         for order in self:
@@ -255,7 +256,7 @@ class Liquidation(models.Model):
     def _pre_mark_done(self):
         for liquidation in self:
             if not any(self.move_material_ids.mapped('quantity_done')):
-                raise UserError(_("You must indicate the quantity to be consumed from your materials."))
+                raise UserError(_('No se puede marcar como realizado una liquidación sin consumir materiales.'))
 
         return True
 

@@ -6,6 +6,7 @@
     'depends': ['base', 'product', 'stock'],
     'data': [
         'security/ir.model.access.csv',
+        'views/stock_move_views.xml',
         'views/shrimp_liquidation_views.xml',
         'views/shrimp_liquidation_config_views.xml',
         'views/inherited_product_template_form_view.xml',

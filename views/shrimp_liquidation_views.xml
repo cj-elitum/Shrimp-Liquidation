@@ -34,7 +34,7 @@
                             attrs="{'invisible':[('reserve_visible', '=', False)]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
-                    <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}" />
+                    <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}"/>
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -42,14 +42,17 @@
                     <field name="shrimps_purchase_order_id" invisible="1"/>
                     <field name="service_order_ids" invisible="1"/>
                     <field name="picking_type_id" invisible="1"/>
+
+
                     <div class="oe_button_box" name="button_box">
+                        <button name="%(action_shrimp_liquidation_moves)d" type="action" string="Movimientos Materiales" class="oe_stat_button" icon="fa-exchange" attrs="{'invisible': [('state', 'not in', ('done'))]}"/>
                         <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
                                 attrs="{'invisible': [('shrimps_purchase_order_id', '=', False)]}">
                             <span>Orden Camaron</span>
                         </button>
                         <button name="action_view_services" type="object" class="oe_stat_button" icon="fa-truck"
                                 attrs="{'invisible': [('service_order_ids', '=', [])]}">
-                             <field name="service_count" widget="statinfo" string="Servicios" help="Ordenes de Compra para los servicios"/>
+                            <field name="service_count" widget="statinfo" string="Servicios" help="Ordenes de Compra para los servicios"/>
                         </button>
                     </div>
                     <field name="reserve_visible" invisible="1"/>
@@ -183,7 +186,7 @@
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
-                                    <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"  />
+                                    <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"/>
                                     <button name="action_show_details" type="object" icon="fa-list"
                                             context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('parent.state', 'not in', ['confirm_materials','done'])]}"/>
                                 </tree>
