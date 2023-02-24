@@ -237,7 +237,7 @@ class Liquidation(models.Model):
 
         self.write({'state': 'done'})
         self.message_post(body=_("Estado: Confirmado -> Realizado"))
-        self.message_post(body=_("Materiales consumidos"))
+        self.   message_post(body=_("Materiales consumidos"))
 
     def _post_inventory(self):
         for order in self:
