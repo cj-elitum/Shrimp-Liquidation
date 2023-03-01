@@ -3,7 +3,7 @@
     'version': '1.0',
     'category': 'Sales/Sales',
     'description': "Module for liquidation of shrimp",
-    'depends': ['base', 'product', 'stock'],
+    'depends': ['base', 'product', 'stock', 'stock_landed_costs'],
     'data': [
         'security/ir.model.access.csv',
         'views/stock_move_views.xml',
@@ -15,9 +15,10 @@
         'views/shrimp_menus.xml',
 
     ],
+    'qweb': [
+    ],
     'demo': [],
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
 }
-

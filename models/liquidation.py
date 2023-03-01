@@ -141,6 +141,7 @@ class Liquidation(models.Model):
 
     service_order_ids = fields.One2many('purchase.order', 'service_liquidation_id', string="Ordenes de servicio", copy=False)
     service_count = fields.Integer(string="Servicios", compute="_compute_service_count")
+    landing_cost_id = fields.Many2one('stock.landed.cost', string="Costos de aterrizaje", copy=False)
 
     @api.model
     def create(self, vals):
@@ -201,6 +202,33 @@ class Liquidation(models.Model):
 
         return action
 
+    def action_generate_landing_costs(self):
+        landed_cost = self.env['stock.landed.cost'].create({
+            'picking_ids': [(6, 0, self.shrimps_purchase_order_id.picking_ids.ids)],
+        })
+        # Fill the cost_lines with the products that are used in the services_lines_ids
+        for line in self.service_lines_ids:
+            landed_cost.write({
+                'cost_lines': [(0, 0, {
+                    'product_id': line.product_service_id.id,
+                    'name': line.product_service_id.name,
+                    'split_method': 'by_quantity',
+                    'price_unit': line.service_unit_cost,
+                })]
+            })
+
+        self.write({'landing_cost_id': landed_cost.id})
+
+    def action_view_landing_costs(self):
+        # The .read()[0] method is then called to retrieve the dictionary representation of the action's definition,
+        # and select the first (and only) element of the resulting list.
+        action = self.env.ref('stock_landed_costs.action_stock_landed_cost').read()[0]
+        # Open the form view of the landed cost
+        action['views'] = [(self.env.ref('stock_landed_costs.view_stock_landed_cost_form').id, 'form')]
+        # Specify the ID of the landed cost to open
+        action['res_id'] = self.landing_cost_id.id
+        return action
+
     def _compute_service_count(self):
         for record in self:
             record.service_count = len(record.service_order_ids)
@@ -255,7 +283,7 @@ class Liquidation(models.Model):
 
     def _pre_mark_done(self):
         for liquidation in self:
-            if not any(self.move_material_ids.mapped('quantity_done')):
+            if not any(liquidation.move_material_ids.mapped('quantity_done')):
                 raise UserError(_('No se puede marcar como realizado una liquidación sin consumir materiales.'))
 
         return True
@@ -297,6 +325,3 @@ class Liquidation(models.Model):
                     "Orden de compra <a href=# data-oe-model=purchase.order data-oe-id=%d>%s</a> ha sido generada.") % (
                          purchase_order.id, purchase_order.name))
             self.message_post(body=_("Estado: PO de Servicios Creada"))
-
-
-
