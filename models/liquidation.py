@@ -111,9 +111,10 @@ class Liquidation(models.Model):
     # State
     state = fields.Selection([
         ('draft', 'Borrador'),
-        ('order_created', 'Clasificado'),
-        ('used_services', 'Ordenes de Servicios'),
+        ('classified', 'Clasificado'),
         ('confirm_materials', 'Materiales confirmados'),
+        ('consume_materials', 'Materiales consumidos'),
+        ('used_services', 'Ordenes de Servicios'),
         ('done', 'Realizado'),
     ], string='Estado', default='draft')
 
@@ -160,7 +161,7 @@ class Liquidation(models.Model):
             r.classified_pounds = sum(r.liquidity_lines_ids.mapped('total_weight'))
 
     def generate_purchase_order(self):
-        self.write({'state': 'order_created'})
+        self.write({'state': 'classified'})
         purchase_order = self.env['purchase.order'].create({
             'partner_id': self.provider_id.id,
             'liquidation_id': self.id,
@@ -218,6 +219,7 @@ class Liquidation(models.Model):
             })
 
         self.write({'landing_cost_id': landed_cost.id})
+        self.write({'state': 'done'})
 
     def action_view_landing_costs(self):
         # The .read()[0] method is then called to retrieve the dictionary representation of the action's definition,
@@ -264,7 +266,7 @@ class Liquidation(models.Model):
         liquidations_not_to_backorder = self
         liquidations_not_to_backorder._post_inventory()
 
-        self.write({'state': 'done'})
+        self.write({'state': 'consume_materials'})
         self.message_post(body=_("Estado: Confirmado -> Realizado"))
         self.message_post(body=_("Materiales consumidos"))
 
@@ -302,7 +304,7 @@ class Liquidation(models.Model):
         self.move_material_ids.update({'picking_type_id': self.picking_type_id})
 
     def action_generate_services(self):
-        self.state = 'used_services'
+        self.write({'state': 'used_services'})
         for service in self.service_lines_ids:
             purchase_order = self.env['purchase.order'].create({
                 'partner_id': service.provider_id.id,

@@ -27,15 +27,15 @@
                     <button name="generate_purchase_order" string="Generate Order"
                             type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="action_generate_services" string="Generate Services"
-                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','order_created')]}"/>
+                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','consume_materials')]}"/>
                     <button name="action_confirm" string="Confirmar Materiales" type="object" class="oe_highlight"
-                            attrs="{'invisible':[('state','!=','used_services')]}"/>
+                            attrs="{'invisible':[('state','!=','classified')]}"/>
                     <button name="action_assign" string="Comprobar disponibilidad" type="object" class="oe_highlight"
                             attrs="{'invisible':[('reserve_visible', '=', False)]}"/>
                     <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
-                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight" attrs="{'invisible':['|', ('state', '!=', 'done'), ('landing_cost_id', '!=', False)]}"/>
+                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight" attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}"/>
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -122,43 +122,11 @@
                                 <div class="oe_clear"/>
                             </group>
                         </page>
-                        <page string="Información General">
-                            <group>
-                                <group>
-                                    <field name="client"/>
-                                    <field name="production_order"/>
-                                    <field name="expenses"/>
-                                    <field name="final_batch"/>
-                                    <field name="damaged_product"/>
-                                    <field name="product_for_process"/>
-                                    <field name="frozen_product"/>
-                                    <field name="fresh_product"/>
-                                </group>
-                                <group>
-                                    <field name="discharge_date"/>
-                                    <field name="entry_date"/>
-                                    <field name="process_date"/>
-                                    <field name="process_days"/>
-                                    <field name="requested_glazing_qty" widget="percentage"/>
-                                    <field name="glazing_qty" widget="percentage"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Servicios">
-                            <field name="service_lines_ids" widget="one2many"
-                                   attrs="{'readonly': [('state', '!=', 'order_created')]}">
-                                <tree editable="bottom" decoration-muted="parent.state != 'order_created'">
-                                    <field name="product_service_id"/>
-                                    <field name="service_qty"/>
-                                    <field name="provider_id"/>
-                                </tree>
-                            </field>
-                        </page>
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
                                    context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id, 'default_picking_type_id': picking_type_id}"
                                    attrs="{'readonly': [('state', '=', 'done')]}">
-                                <tree editable="bottom" decoration-muted="parent.state not in ('used_services','confirm_materials')" decoration-success=" (product_uom_qty == quantity_done) and parent.state == 'confirm_materials' ">
+                                <tree editable="bottom" decoration-muted="parent.state not in ('classified','confirm_materials')" decoration-success=" (product_uom_qty == quantity_done) and parent.state == 'confirm_materials' ">
                                     <field name="company_id" invisible="1"/>
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="name" invisible="1"/>
@@ -197,6 +165,38 @@
                                             context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('parent.state', 'not in', ['confirm_materials','done'])]}"/>
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Servicios">
+                            <field name="service_lines_ids" widget="one2many"
+                                   attrs="{'readonly': [('state', '!=', 'consume_materials')]}">
+                                <tree editable="bottom" decoration-muted="parent.state != 'consume_materials'">
+                                    <field name="product_service_id"/>
+                                    <field name="service_qty"/>
+                                    <field name="provider_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Información General">
+                            <group>
+                                <group>
+                                    <field name="client"/>
+                                    <field name="production_order"/>
+                                    <field name="expenses"/>
+                                    <field name="final_batch"/>
+                                    <field name="damaged_product"/>
+                                    <field name="product_for_process"/>
+                                    <field name="frozen_product"/>
+                                    <field name="fresh_product"/>
+                                </group>
+                                <group>
+                                    <field name="discharge_date"/>
+                                    <field name="entry_date"/>
+                                    <field name="process_date"/>
+                                    <field name="process_days"/>
+                                    <field name="requested_glazing_qty" widget="percentage"/>
+                                    <field name="glazing_qty" widget="percentage"/>
+                                </group>
+                            </group>
                         </page>
                         <page string="Rendimiento">
                             <group>
