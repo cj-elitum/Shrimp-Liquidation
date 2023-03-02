@@ -172,7 +172,7 @@ class Liquidation(models.Model):
             self.env['purchase.order.line'].create({
                 'product_id': line.product_id.id,
                 'product_qty': line.total_weight,
-                'price_unit': line.product_id.standard_price,
+                'price_unit': line.product_unit_cost,
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,
             })

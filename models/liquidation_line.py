@@ -8,13 +8,11 @@ class LiquidationLine(models.Model):
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion", ondelete='cascade')
     product_id = fields.Many2one('product.product', string="Producto", required=True)
     suitable_product_ids = fields.Many2many('product.product', compute="_compute_suitable_product_ids")
-    product_unit_cost = fields.Float(string="Costo unitario", related="product_id.standard_price")
-    product_uom = fields.Many2one('uom.uom', string="UoM", related="product_id.uom_id")
+    product_unit_cost = fields.Float(string="Costo unitario", readonly=True)
     product_po_uom = fields.Many2one('uom.uom', string="Unidad de medida", related='product_id.uom_po_id', readonly=True)
     package_id = fields.Many2one('shrimp_liquidation.liquidation.package', string="Empaque")
     product_attribute_ids = fields.Many2many('product.template.attribute.value', string="Atributos",
                                              related="product_id.product_template_attribute_value_ids")
-
     qty = fields.Integer(string="Cantidad")
     weight = fields.Float(string="Peso")
     total_weight = fields.Float(string="Peso total", compute="_compute_total_weight", store=True, readonly=True)
@@ -26,8 +24,35 @@ class LiquidationLine(models.Model):
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        if self.product_id:
-            self.qty = 1
+        if not self.product_id:
+            return
+
+        self._suggest_quantity()
+        self._onchange_total_weight()
+
+    def _onchange_total_weight(self):
+        if not self.product_id:
+            return
+        # Get the provider
+        seller = self.product_id._select_seller(
+            partner_id=self.liquidation_id.provider_id,
+            quantity=self.total_weight,
+            uom_id=self.product_po_uom,
+        )
+        self.product_unit_cost = seller.price
+
+    def _suggest_quantity(self):
+        if not self.product_id:
+            return
+        seller_min_qty = self.product_id.seller_ids\
+            .filtered(lambda r: r.name == self.liquidation_id.provider_id and (not r.product_id or r.product_id == self.product_id))\
+            .sorted(key=lambda r: r.min_qty)
+        if seller_min_qty:
+            self.qty = seller_min_qty[0].min_qty or 1.0
+            self.weight = 1.0
+        else:
+            self.qty = 1.0
+            self.weight = 1.0
 
     @api.depends('liquidation_id.process')
     def _compute_suitable_product_ids(self):
