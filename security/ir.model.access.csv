@@ -2,5 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_shrimp_liquidation,access.shrimp_liquidation,model_shrimp_liquidation_liquidation,base.group_user,1,1,1,1
 access_shrimp_liquidation_line,access.shrimp_liquidation_line,model_shrimp_liquidation_liquidation_line,base.group_user,1,1,1,1
 access_shrimp_liquidation_package,access.shrimp_liquidation_package,model_shrimp_liquidation_liquidation_package,base.group_user,1,1,1,1
-access_shrimp_material_line,access.shrimp_material_line,model_shrimp_liquidation_material_line,base.group_user,1,1,1,1
 access_shrimp_liquidation_service_line,access.shrimp_liquidation_service_line,model_shrimp_liquidation_liquidation_service_line,base.group_user,1,1,1,1

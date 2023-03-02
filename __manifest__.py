@@ -12,6 +12,7 @@
         'views/inherited_product_template_form_view.xml',
         'views/inherited_purchase_order_view.xml',
         'views/res_config_settings_views.xml',
+        'views/stock_landed_cost_views.xml',
         'views/shrimp_menus.xml',
 
     ],

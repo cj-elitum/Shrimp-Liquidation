@@ -35,7 +35,7 @@
                     <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
-                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight" attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}"/>
+                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight"/> <!--  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}" -->
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>

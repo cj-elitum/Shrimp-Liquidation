@@ -206,6 +206,7 @@ class Liquidation(models.Model):
     def action_generate_landing_costs(self):
         landed_cost = self.env['stock.landed.cost'].create({
             'picking_ids': [(6, 0, self.shrimps_purchase_order_id.picking_ids.ids)],
+            'liquidation_id': self.id,
         })
         # Fill the cost_lines with the products that are used in the services_lines_ids
         for line in self.service_lines_ids:
@@ -217,7 +218,6 @@ class Liquidation(models.Model):
                     'price_unit': line.service_unit_cost,
                 })]
             })
-
         self.write({'landing_cost_id': landed_cost.id})
         self.write({'state': 'done'})
 
