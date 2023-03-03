@@ -9,7 +9,8 @@ class LiquidationLine(models.Model):
     product_id = fields.Many2one('product.product', string="Producto", required=True)
     suitable_product_ids = fields.Many2many('product.product', compute="_compute_suitable_product_ids")
     product_unit_cost = fields.Float(string="Costo unitario", readonly=True)
-    product_po_uom = fields.Many2one('uom.uom', string="Unidad de medida", related='product_id.uom_po_id', readonly=True)
+    product_po_uom = fields.Many2one('uom.uom', string="Unidad de medida")
+    product_uom_qty = fields.Float(string="Cantidad convertida", compute="_compute_product_uom_qty", readonly=True)
     package_id = fields.Many2one('shrimp_liquidation.liquidation.package', string="Empaque")
     product_attribute_ids = fields.Many2many('product.template.attribute.value', string="Atributos",
                                              related="product_id.product_template_attribute_value_ids")
@@ -26,7 +27,7 @@ class LiquidationLine(models.Model):
     def _onchange_product_id(self):
         if not self.product_id:
             return
-
+        self.product_po_uom = self.product_id.uom_po_id
         self._suggest_quantity()
         self._onchange_total_weight()
 
@@ -53,6 +54,14 @@ class LiquidationLine(models.Model):
         else:
             self.qty = 1.0
             self.weight = 1.0
+
+    @api.depends('product_po_uom', 'total_weight', 'product_id.uom_id')
+    def _compute_product_uom_qty(self):
+        for line in self:
+            if line.product_id and line.product_id.uom_id != line.product_po_uom:
+                line.product_uom_qty = line.product_po_uom._compute_quantity(line.total_weight, line.product_id.uom_id)
+            else:
+                line.product_uom_qty = line.total_weight
 
     @api.depends('liquidation_id.process')
     def _compute_suitable_product_ids(self):

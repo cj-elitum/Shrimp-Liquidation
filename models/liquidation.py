@@ -143,6 +143,7 @@ class Liquidation(models.Model):
     service_order_ids = fields.One2many('purchase.order', 'service_liquidation_id', string="Ordenes de servicio", copy=False)
     service_count = fields.Integer(string="Servicios", compute="_compute_service_count")
     landing_cost_id = fields.Many2one('stock.landed.cost', string="Costos de aterrizaje", copy=False)
+    landing_cost_account = fields.Many2one('account.account', string="Cuenta de costos de aterrizaje", copy=False)
 
     @api.model
     def create(self, vals):
@@ -172,7 +173,7 @@ class Liquidation(models.Model):
         for line in self.liquidity_lines_ids:
             self.env['purchase.order.line'].create({
                 'product_id': line.product_id.id,
-                'product_qty': line.total_weight,
+                'product_qty': line.product_uom_qty,
                 'price_unit': line.product_unit_cost,
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,
@@ -216,8 +217,10 @@ class Liquidation(models.Model):
                     'name': line.product_service_id.name,
                     'split_method': 'by_quantity',
                     'price_unit': line.service_unit_cost,
+                    'account_id': self.landing_cost_account.id,
                 })]
             })
+        landed_cost.compute_landed_cost()
         self.write({'landing_cost_id': landed_cost.id})
         self.write({'state': 'done'})
 

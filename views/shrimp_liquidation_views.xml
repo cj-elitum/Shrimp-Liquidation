@@ -35,7 +35,7 @@
                     <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
-                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight"/> <!--  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}" -->
+                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight"  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}"/> <!--  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}" -->
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -88,6 +88,7 @@
                             <field name="reception_date"/>
                             <field name="batch_number"/>
                             <field name="company_id"/>
+                            <field name="landing_cost_account"/>
                             <field name="location_src_id" invisible="1"/>
                             <field name="material_location_id" invisible="1"/>
                         </group>
@@ -104,6 +105,7 @@
                                     <field name="qty"/>
                                     <field name="weight"/>
                                     <field name="product_po_uom"/>
+                                    <field name="product_uom_qty"/>
                                     <field name="product_unit_cost" force_save="1"/>
                                     <field name="total_weight"/>
                                     <field name="suitable_product_ids" invisible="1"/>
