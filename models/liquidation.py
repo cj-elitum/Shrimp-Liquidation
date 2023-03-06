@@ -205,6 +205,12 @@ class Liquidation(models.Model):
         return action
 
     def action_generate_landing_costs(self):
+        if not self.landing_cost_account:
+            raise UserError(_('No se ha configurado la cuenta de costos de aterrizaje.'))
+
+        if not self.shrimps_purchase_order_id.picking_ids:
+            raise UserError(_('No se ha confirmado la orden de entrega de camarones.'))
+
         landed_cost = self.env['stock.landed.cost'].create({
             'picking_ids': [(6, 0, self.shrimps_purchase_order_id.picking_ids.ids)],
             'liquidation_id': self.id,
@@ -307,6 +313,9 @@ class Liquidation(models.Model):
         self.move_material_ids.update({'picking_type_id': self.picking_type_id})
 
     def action_generate_services(self):
+        if not self.service_lines_ids:
+            raise UserError(_('No se ha agregado ningún servicio.'))
+
         self.write({'state': 'used_services'})
         for service in self.service_lines_ids:
             purchase_order = self.env['purchase.order'].create({

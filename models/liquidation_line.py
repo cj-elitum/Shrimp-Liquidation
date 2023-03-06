@@ -57,9 +57,10 @@ class LiquidationLine(models.Model):
 
     @api.depends('product_po_uom', 'total_weight', 'product_id.uom_id')
     def _compute_product_uom_qty(self):
+        rounding_method = 'HALF-UP'
         for line in self:
             if line.product_id and line.product_id.uom_id != line.product_po_uom:
-                line.product_uom_qty = line.product_po_uom._compute_quantity(line.total_weight, line.product_id.uom_id)
+                line.product_uom_qty = line.product_po_uom._compute_quantity(line.total_weight, line.product_id.uom_po_id, rounding_method=rounding_method)
             else:
                 line.product_uom_qty = line.total_weight
 

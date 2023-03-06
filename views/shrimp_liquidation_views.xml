@@ -35,22 +35,21 @@
                     <button name="action_done" type="object" string="Consumir Materiales" class="oe_highlight" attrs="{'invisible':[('state', '!=', 'confirm_materials')]}"/>
                     <button name="action_unreserve" type="object" string="Anular reserva"
                             attrs="{'invisible':[('unreserve_visible', '=', False)]}"/>
-                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight"  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}"/> <!--  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}" -->
+                    <button name="action_generate_landing_costs" string="Generar costes en destino" type="object" class="oe_highlight" attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}"/> <!--  attrs="{'invisible':['|', ('state', '!=', 'used_services'), ('landing_cost_id', '!=', False)]}" -->
                     <button name="action_draft" string="Borrador" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <field name="shrimps_purchase_order_id" invisible="1"/>
                     <field name="service_order_ids" invisible="1"/>
                     <field name="picking_type_id" invisible="1"/>
-                    <field name="landing_cost_id" invisible="1" />
+                    <field name="landing_cost_id" invisible="1"/>
 
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_landing_costs" type="object" class="oe_stat_button" icon="fa-money"
                                 attrs="{'invisible': [('landing_cost_id', '=', False)]}">
                             <span>Costos en Destino</span>
                         </button>
-                        <button name="%(action_shrimp_liquidation_moves)d" type="action" string="Movimientos Materiales" class="oe_stat_button" icon="fa-exchange" attrs="{'invisible': [('state', 'not in', ('done'))]}"/>
+                        <button name="%(action_shrimp_liquidation_moves)d" type="action" string="Movimientos Materiales" class="oe_stat_button" icon="fa-exchange" attrs="{'invisible': [('state', 'not in', ('consume_materials','used_services','done'))]}"/>
                         <button name="action_view_shrimp_order" type="object" class="oe_stat_button" icon="fa-archive"
                                 attrs="{'invisible': [('shrimps_purchase_order_id', '=', False)]}">
                             <span>Orden Camaron</span>
@@ -79,16 +78,17 @@
                     <group>
                         <group>
                             <field name="proccess_plant"/>
+                            <field name="shrimps_purchase_order_id"/>
                             <field name="provider_id"/>
                             <field name="reported_pounds"/>
                             <field name="classified_pounds"/>
                         </group>
                         <group>
+                            <field name="landing_cost_account" attrs="{'invisible': [('state','not in',('used_services', 'done'))]}"/>
                             <field name="received_pounds"/>
                             <field name="reception_date"/>
                             <field name="batch_number"/>
                             <field name="company_id"/>
-                            <field name="landing_cost_account"/>
                             <field name="location_src_id" invisible="1"/>
                             <field name="material_location_id" invisible="1"/>
                         </group>
@@ -127,7 +127,7 @@
                         <page string="Movimientos de materiales">
                             <field name="move_material_ids"
                                    context="{'default_location_id':location_src_id,'default_location_dest_id':material_location_id, 'default_picking_type_id': picking_type_id}"
-                                   attrs="{'readonly': [('state', '=', 'done')]}">
+                                   attrs="{'readonly': [('state', 'not in', ('confirm_materials','classified'))]}">
                                 <tree editable="bottom" decoration-muted="parent.state not in ('classified','confirm_materials')" decoration-success=" (product_uom_qty == quantity_done) and parent.state == 'confirm_materials' ">
                                     <field name="company_id" invisible="1"/>
                                     <field name="product_uom_category_id" invisible="1"/>
@@ -173,7 +173,6 @@
                                    attrs="{'readonly': [('state', '!=', 'consume_materials')]}">
                                 <tree editable="bottom" decoration-muted="parent.state != 'consume_materials'">
                                     <field name="product_service_id"/>
-                                    <field name="service_qty"/>
                                     <field name="provider_id"/>
                                 </tree>
                             </field>
