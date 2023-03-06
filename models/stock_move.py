@@ -7,6 +7,7 @@ class StockMove(models.Model):
 
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion", ondelete='cascade')
     product_po_uom = fields.Many2one('uom.uom', string="Unidad de medida", related='product_id.uom_po_id', readonly=True)
+    product_unit_price = fields.Float(string="Precio unitario", related='product_id.standard_price', readonly=True)
 
     def action_show_details(self):
         self.ensure_one()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="shrimp_liquidation_purchase_order_form" model="ir.ui.view">
         <field name="name">shrimp_liquidation_purchase_order_form</field>
         <field name="model">purchase.order</field>

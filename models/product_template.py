@@ -12,6 +12,8 @@ class ProductTemplate(models.Model):
         ('full', 'Entero'),
     ], string="Tipo de proceso")
 
+    categ_id_name = fields.Char(related='categ_id.name', string='Categoría')
+
 
 
 

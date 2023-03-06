@@ -161,6 +161,7 @@
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
+                                    <field name="product_unit_price"/>
                                     <field name="quantity_done" invisible="1"/>
                                     <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"/>
                                     <button name="action_show_details" type="object" icon="fa-list"

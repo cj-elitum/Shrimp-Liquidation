@@ -226,6 +226,18 @@ class Liquidation(models.Model):
                     'account_id': self.landing_cost_account.id,
                 })]
             })
+
+        for material_line in self.move_material_ids:
+            landed_cost.write({
+                'cost_lines': [(0, 0, {
+                    'product_id': material_line.product_id.id,
+                    'name': material_line.product_id.name,
+                    'split_method': 'by_quantity',
+                    'price_unit': material_line.product_unit_price * material_line.product_uom_qty,
+                    'account_id': self.landing_cost_account.id,
+                })]
+            })
+
         landed_cost.compute_landed_cost()
         self.write({'landing_cost_id': landed_cost.id})
         self.write({'state': 'done'})
