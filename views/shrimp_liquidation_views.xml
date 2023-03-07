@@ -176,6 +176,7 @@
                                 <tree editable="bottom" decoration-muted="parent.state != 'consume_materials'">
                                     <field name="product_service_id"/>
                                     <field name="provider_id"/>
+                                    <field name="service_unit_cost"/>
                                 </tree>
                             </field>
                         </page>

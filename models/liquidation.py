@@ -277,6 +277,8 @@ class Liquidation(models.Model):
         return True
 
     def action_confirm(self):
+        if not self.move_material_ids:
+            raise UserError(_('No se ha agregado ningún material a la liquidación.'))
         self.state = 'confirm_materials'
         for liquidation in self:
             liquidation.move_material_ids._action_confirm(merge=False)
