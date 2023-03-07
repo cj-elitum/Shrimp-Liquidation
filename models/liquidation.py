@@ -154,12 +154,15 @@ class Liquidation(models.Model):
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
         for r in self:
-            r.total_packaged_weight = sum(r.liquidity_lines_ids.mapped('total_weight'))
+            r.total_packaged_weight = sum(r.liquidity_lines_ids.mapped('total_uom_weight'))
 
     @api.depends('liquidity_lines_ids')
     def _compute_classified_pounds(self):
         for r in self:
-            r.classified_pounds = sum(r.liquidity_lines_ids.mapped('total_weight'))
+            classified_pounds = sum(r.liquidity_lines_ids.mapped('total_uom_weight'))
+            if classified_pounds > r.received_pounds:
+                raise UserError(_("Las libras clasificadas no pueden ser mayores a las libras recibidas."))
+            r.classified_pounds = classified_pounds
 
     def generate_purchase_order(self):
         self.write({'state': 'classified'})
@@ -173,7 +176,7 @@ class Liquidation(models.Model):
         for line in self.liquidity_lines_ids:
             self.env['purchase.order.line'].create({
                 'product_id': line.product_id.id,
-                'product_qty': line.product_uom_qty,
+                'product_qty': line.total_uom_weight,
                 'price_unit': line.product_unit_cost,
                 'order_id': purchase_order.id,
                 'product_uom': line.product_id.uom_po_id.id,

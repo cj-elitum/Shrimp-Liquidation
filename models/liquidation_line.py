@@ -9,14 +9,15 @@ class LiquidationLine(models.Model):
     product_id = fields.Many2one('product.product', string="Producto", required=True)
     suitable_product_ids = fields.Many2many('product.product', compute="_compute_suitable_product_ids")
     product_unit_cost = fields.Float(string="Costo unitario", readonly=True)
-    product_po_uom = fields.Many2one('uom.uom', string="Unidad de medida")
-    product_uom_qty = fields.Float(string="Cantidad convertida", compute="_compute_product_uom_qty", readonly=True)
+    product_uom = fields.Many2one('uom.uom', string="Unidad de medida")
     package_id = fields.Many2one('shrimp_liquidation.liquidation.package', string="Empaque")
     product_attribute_ids = fields.Many2many('product.template.attribute.value', string="Atributos",
                                              related="product_id.product_template_attribute_value_ids")
     qty = fields.Integer(string="Cantidad")
     weight = fields.Float(string="Peso")
     total_weight = fields.Float(string="Peso total", compute="_compute_total_weight", store=True, readonly=True)
+    total_uom_weight = fields.Float(string="Cantidad convertida", compute="_compute_total_uom_weight", readonly=True)
+    product_po_uom = fields.Many2one('uom.uom', string="UdM", related="product_id.uom_po_id")
 
     @api.depends('qty', 'weight')
     def _compute_total_weight(self):
@@ -27,7 +28,7 @@ class LiquidationLine(models.Model):
     def _onchange_product_id(self):
         if not self.product_id:
             return
-        self.product_po_uom = self.product_id.uom_po_id
+        self.product_uom = self.product_id.uom_po_id
         self._suggest_quantity()
         self._onchange_total_weight()
 
@@ -38,7 +39,7 @@ class LiquidationLine(models.Model):
         seller = self.product_id._select_seller(
             partner_id=self.liquidation_id.provider_id,
             quantity=self.total_weight,
-            uom_id=self.product_po_uom,
+            uom_id=self.product_uom,
         )
         self.product_unit_cost = seller.price
 
@@ -55,14 +56,14 @@ class LiquidationLine(models.Model):
             self.qty = 1.0
             self.weight = 1.0
 
-    @api.depends('product_po_uom', 'total_weight', 'product_id.uom_id')
-    def _compute_product_uom_qty(self):
+    @api.depends('product_uom', 'total_weight', 'product_id.uom_id')
+    def _compute_total_uom_weight(self):
         rounding_method = 'HALF-UP'
         for line in self:
-            if line.product_id and line.product_id.uom_id != line.product_po_uom:
-                line.product_uom_qty = line.product_po_uom._compute_quantity(line.total_weight, line.product_id.uom_po_id, rounding_method=rounding_method)
+            if line.product_id and line.product_id.uom_id != line.product_uom:
+                line.total_uom_weight = line.product_uom._compute_quantity(line.total_weight, line.product_id.uom_po_id, rounding_method=rounding_method)
             else:
-                line.product_uom_qty = line.total_weight
+                line.total_uom_weight = line.total_weight
 
     @api.depends('liquidation_id.process')
     def _compute_suitable_product_ids(self):

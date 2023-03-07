@@ -43,6 +43,8 @@
                     <field name="service_order_ids" invisible="1"/>
                     <field name="picking_type_id" invisible="1"/>
                     <field name="landing_cost_id" invisible="1"/>
+                    <field name="shrimps_purchase_order_id" invisible="1"/>
+
 
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_landing_costs" type="object" class="oe_stat_button" icon="fa-money"
@@ -78,7 +80,6 @@
                     <group>
                         <group>
                             <field name="proccess_plant"/>
-                            <field name="shrimps_purchase_order_id"/>
                             <field name="provider_id"/>
                             <field name="reported_pounds"/>
                             <field name="classified_pounds"/>
@@ -104,10 +105,11 @@
                                     <field name="package_id"/>
                                     <field name="qty"/>
                                     <field name="weight"/>
-                                    <field name="product_po_uom"/>
-                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom" string="UdM Clasificacion"/>
                                     <field name="product_unit_cost" force_save="1"/>
-                                    <field name="total_weight"/>
+                                    <field name="total_weight" invisible="1"/>
+                                    <field name="total_uom_weight" string="Peso Total"/>
+                                    <field name="product_po_uom"/>
                                     <field name="suitable_product_ids" invisible="1"/>
                                 </tree>
                             </field>
@@ -161,7 +163,6 @@
                                     <field name="product_uom_qty"/>
                                     <field name="product_uom"/>
                                     <field name="location_id"/>
-                                    <field name="product_unit_price"/>
                                     <field name="quantity_done" invisible="1"/>
                                     <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"/>
                                     <button name="action_show_details" type="object" icon="fa-list"
