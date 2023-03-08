@@ -8,7 +8,7 @@ class LiquidationServiceLine(models.Model):
     liquidation_id = fields.Many2one('shrimp_liquidation.liquidation', string="Liquidacion")
     product_service_id = fields.Many2one('product.product', string="Servicio", domain=[('type', '=', 'service')])
     service_qty = fields.Integer(string="Cantidad", default=1)
-    provider_id = fields.Many2one('res.partner', string="Proveedor")
+    provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
     service_unit_cost = fields.Float(string="Costo unitario", related="product_service_id.standard_price", readonly=True)
 
     @api.onchange('product_service_id')

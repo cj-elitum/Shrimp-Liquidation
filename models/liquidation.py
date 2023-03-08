@@ -19,17 +19,6 @@ class Liquidation(models.Model):
         return location and location.id or False
 
     @api.model
-    def _get_default_location_dest_id(self):
-        location = False
-        company_id = self.env.context.get('default_company_id', self.env.company.id)
-        if self._context.get('default_picking_type_id'):
-            location = self.env['stock.picking.type'].browse(
-                self.env.context['default_picking_type_id']).default_location_dest_id
-        if not location:
-            location = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1).lot_stock_id
-        return location and location.id or False
-
-    @api.model
     def _get_default_picking_type(self):
         company_id = self.env.context.get('default_company_id', self.env.company.id)
         return self.env['stock.picking.type'].search([('code', '=', 'liquidation'),

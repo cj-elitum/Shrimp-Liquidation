@@ -81,15 +81,18 @@
                         <group>
                             <field name="proccess_plant"/>
                             <field name="provider_id"/>
-                            <field name="reported_pounds"/>
+                            <field name="reported_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}" />
                             <field name="classified_pounds"/>
+                            <field name="location_src_id"/>
+                            <field name="material_location_id"/>
                         </group>
                         <group>
                             <field name="landing_cost_account" attrs="{'invisible': [('state','not in',('used_services', 'done'))]}"/>
-                            <field name="received_pounds"/>
+                            <field name="received_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                             <field name="reception_date"/>
                             <field name="batch_number"/>
-                            <field name="company_id"/>
+                            <field name="company_id" groups="base.group_multi_company" />
+
                             <field name="location_src_id" invisible="1"/>
                             <field name="material_location_id" invisible="1"/>
                         </group>
