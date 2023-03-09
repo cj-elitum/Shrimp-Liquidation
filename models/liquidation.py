@@ -7,16 +7,10 @@ class Liquidation(models.Model):
     _description = 'Liquidation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    @api.model
-    def _get_default_location_src_id(self):
-        location = False
-        company_id = self.env.context.get('default_company_id', self.env.company.id)
-        if self.env.context.get('default_picking_type_id'):
-            location = self.env['stock.picking.type'].browse(
-                self.env.context['default_picking_type_id']).default_location_src_id
-        if not location:
-            location = self.env['stock.warehouse'].search([('company_id', '=', company_id)], limit=1).lot_stock_id
-        return location and location.id or False
+    # @api.model
+    # def _get_default_location_src_id_config(self):
+    #     config_param = self.env['ir.config_parameter'].sudo().get_param('shrimp_liquidation.liquidation_location_src_id')
+    #     return self.env['stock.location'].browse(int(config_param)).id if config_param else False
 
     @api.model
     def _get_default_picking_type(self):
@@ -111,11 +105,12 @@ class Liquidation(models.Model):
     move_material_ids = fields.One2many('stock.move', 'liquidation_id', string="Movimientos")
     location_src_id = fields.Many2one(
         'stock.location', 'Components Location',
-        default=_get_default_location_src_id,
-        readonly=True, required=True,
+        default=lambda self: self.env.company.liquidation_location_src_id.id or False,
+        readonly=True,
+        required=True,
         domain="[('usage','=','internal'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
-        states={'draft': [('readonly', False)]}, check_company=True,
-        help="Location where the system will look for components.")
+        check_company=True,
+        help="Location where the system will look for materials.")
 
     material_location_id = fields.Many2one('stock.location', "Materials Location",
                                            compute="_compute_production_location", store=True)

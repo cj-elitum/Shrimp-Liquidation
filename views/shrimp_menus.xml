@@ -24,10 +24,20 @@
               sequence="4"
     />
 
+    <!-- Configuration res.config.setting menu -->
+    <menuitem id="shrimp_liquidation_config_settings_menu"
+              name="Settings"
+              parent="shrimp_liquidation_config_menu"
+              action="liquidation_config_settings_action"
+              sequence="1"
+    />
+
     <menuitem id="shrimp_liquidation_config_menu_package"
               name="Packages"
               parent="shrimp_liquidation_config_menu"
-              action="shrimp_liquidation_config_action_packages"/>
+              action="shrimp_liquidation_config_action_packages"
+              sequence="2"
+    />
 
     <!-- Purchase orders menu -->
     <menuitem id="shrimp_liquidation_order_menu" name="Orders"
@@ -63,11 +73,5 @@
               action="stock.action_production_lot_form"
     />
 
-    <!-- Configuration res.config.setting menu -->
-    <menuitem id="shrimp_liquidation_config_settings_menu"
-              name="Settings"
-              parent="shrimp_liquidation_config_menu"
-              action="liquidation_config_settings_action"
-    />
 
 </odoo>
