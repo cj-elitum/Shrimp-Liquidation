@@ -44,7 +44,8 @@
                     <field name="picking_type_id" invisible="1"/>
                     <field name="landing_cost_id" invisible="1"/>
                     <field name="shrimps_purchase_order_id" invisible="1"/>
-
+                    <field name="location_src_id" invisible="1"/>
+                    <field name="material_location_id" invisible="1"/>
 
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_landing_costs" type="object" class="oe_stat_button" icon="fa-money"
@@ -81,17 +82,15 @@
                         <group>
                             <field name="proccess_plant"/>
                             <field name="provider_id"/>
-                            <field name="reported_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}" />
+                            <field name="reported_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                             <field name="classified_pounds"/>
-                            <field name="location_src_id"/>
-                            <field name="material_location_id"/>
                         </group>
                         <group>
                             <field name="landing_cost_account" attrs="{'invisible': [('state','not in',('used_services', 'done'))]}"/>
                             <field name="received_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                             <field name="reception_date"/>
                             <field name="batch_number"/>
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="company_id" groups="base.group_multi_company"/>
 
                             <field name="location_src_id" invisible="1"/>
                             <field name="material_location_id" invisible="1"/>
@@ -143,7 +142,8 @@
                                     <field name="location_dest_id" invisible="1"/>
                                     <field name="show_details_visible" invisible="1"/>
                                     <field name="picking_type_id" invisible="1"/>
-
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="quantity_done" invisible="1"/>
                                     <field name="move_line_ids" invisible="1">
                                         <tree>
                                             <field name="lot_id" invisible="1"/>
@@ -164,9 +164,7 @@
 
                                     <field name="product_id" domain="[('categ_id','=','Material')]" string="Materiales"/>
                                     <field name="product_uom_qty"/>
-                                    <field name="product_uom"/>
-                                    <field name="location_id"/>
-                                    <field name="quantity_done" invisible="1"/>
+                                    <field name="product_uom" attrs="{'readonly': True}"/>
                                     <field name="forecast_availability" string="Reservado" attrs="{'column_invisible': [('parent.state', 'not in', ['confirm_materials'])]}"/>
                                     <button name="action_show_details" type="object" icon="fa-list"
                                             context="{'default_product_uom_qty': 0}" attrs="{'invisible': [('parent.state', 'not in', ['confirm_materials','done'])]}"/>

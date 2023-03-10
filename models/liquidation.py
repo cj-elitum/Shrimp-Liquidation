@@ -75,7 +75,7 @@ class Liquidation(models.Model):
     process_days = fields.Integer(string="Días de proceso")
     requested_glazing_qty = fields.Float(string="% de glaseado solicitada")
     glazing_qty = fields.Float(string="% de glaseado real")
-    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company, required=True)
 
     # Rendimiento
     peeled_pounds = fields.Float(string="Libras peladas")
@@ -196,7 +196,11 @@ class Liquidation(models.Model):
             raise UserError(_('No se ha configurado la cuenta de costos de aterrizaje.'))
 
         if not self.shrimps_purchase_order_id.picking_ids:
-            raise UserError(_('No se ha confirmado la orden de entrega de camarones.'))
+            raise UserError(_('No se ha creado la orden de recepcion'))
+
+        # Check if picking state is done
+        if self.shrimps_purchase_order_id.picking_ids.state != 'done':
+            raise UserError(_('No se ha completado la orden de recepcion'))
 
         landed_cost = self.env['stock.landed.cost'].create({
             'picking_ids': [(6, 0, self.shrimps_purchase_order_id.picking_ids.ids)],
