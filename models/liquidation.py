@@ -137,10 +137,14 @@ class Liquidation(models.Model):
 
     @api.onchange('process')
     def _onchange_process(self):
-        services = None
-        if self.process == 'shell_on':
-            services = self.env.company.shellon_service_ids
-
+        services_handler = {
+            'shell_on': self.env.company.shellon_service_ids,
+            'full': self.env.company.whole_shrimp_service_ids,
+            'pcd_iqf': self.env.company.pcd_iqf_service_ids,
+            'cooked_pyd': self.env.company.cooked_pyd_service_ids,
+            'pyd_block': self.env.company.pyd_block_service_ids,
+        }
+        services = services_handler.get(self.process)
         if services:
             self.service_lines_ids = [(5, 0, 0)]
             for service in services:
@@ -149,6 +153,7 @@ class Liquidation(models.Model):
                     'product_service_id': service.id,
                     'provider_id': service.seller_ids.name.id,
                 })]
+
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
