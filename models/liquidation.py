@@ -135,6 +135,21 @@ class Liquidation(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('shrimp_liquidation.liquidation.sequence') or _('New')
         return super(Liquidation, self).create(vals)
 
+    @api.onchange('process')
+    def _onchange_process(self):
+        services = None
+        if self.process == 'shell_on':
+            services = self.env.company.shellon_service_ids
+
+        if services:
+            self.service_lines_ids = [(5, 0, 0)]
+            for service in services:
+                self.service_lines_ids = [(0, 0, {
+                    'liquidation_id': self.id,
+                    'product_service_id': service.id,
+                    'provider_id': service.seller_ids.name.id,
+                })]
+
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):
         for r in self:

@@ -9,10 +9,11 @@ class LiquidationServiceLine(models.Model):
     product_service_id = fields.Many2one('product.product', string="Servicio", domain=[('type', '=', 'service')])
     service_qty = fields.Integer(string="Cantidad", default=1)
     provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
-    service_unit_cost = fields.Float(string="Costo unitario", related="product_service_id.standard_price", readonly=True)
+    service_unit_cost = fields.Float(string="Costo unitario", required=True, default= lambda self: self.product_service_id.standard_price)
 
     @api.onchange('product_service_id')
     def _onchange_product_id(self):
         providers = self.product_service_id.seller_ids.mapped('name')
         self.provider_id = False
         return {'domain': {'provider_id': [('id', 'in', providers.ids)]}}
+

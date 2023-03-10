@@ -9,7 +9,7 @@
             <xpath expr="//div[hasclass('settings')]" position="inside">
                 <div class="app_settings_block" data-string="Liquidation" string="Liquidation" data-key="shrimp_liquidation">
                     <h2>Materiales</h2>
-                    <div class="row mt16 o_settings_container" name="qualification_setting_container">
+                    <div class="row mt16 o_settings_container" name="material_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane">
                                 <label for="liquidation_location_src_id"/>
@@ -17,12 +17,25 @@
                                     Choose the location source location for the materials
                                 </div>
                                 <div class="mt-3">
-                                <field name="liquidation_location_src_id"/>
+                                    <field name="liquidation_location_src_id"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <h2>Procesos</h2>
+                    <div class="row mt16 o_settings_container" name="process_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="shellon_service_ids"/>
+                                <div class="text-muted">
+                                    Choose services for shellon process
+                                </div>
+                                <div class="mt-3">
+                                    <field name="shellon_service_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>

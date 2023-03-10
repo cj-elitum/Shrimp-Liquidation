@@ -7,10 +7,8 @@
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='pricing']" position="after">
-                    <label for="process_type"/>
-                    <div>
-                        <field name="process_type" />
-                    </div>
+                    <field name="categ_id_name" invisible="1"/>
+                    <field name="process_type" attrs="{'invisible': [('categ_id_name','!=','Camaron')]}"/>
                 </xpath>
             </field>
         </record>
