@@ -49,7 +49,7 @@ class Liquidation(models.Model):
     is_fresh = fields.Boolean(string="Fresco")
 
     # Header
-    proccess_plant = fields.Char(string="Planta de proceso")
+    process_plant = fields.Char(string="Planta de proceso")
     provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
     reported_pounds = fields.Float(string="Libras reportadas", required=True)
     classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds", required=True)

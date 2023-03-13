@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base.module_category_shrimp_liquidation" model="ir.module.category">
+        <field name="name">Shrimp Liquidation</field>
+        <field name="description">Manage the liquidation of pool shrimps</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="groups_shrimp_liquidation_user" model="res.groups">
+        <field name="name">Shrimp Liquidation User</field>
+        <field name="category_id" ref="base.module_category_shrimp_liquidation"/>
+    </record>
+
+    <record id="groups_shrimp_liquidation_manager" model="res.groups">
+        <field name="name">Shrimp Liquidation Manager</field>
+        <field name="category_id" ref="base.module_category_shrimp_liquidation"/>
+        <field name="implied_ids" eval="[(4, ref('groups_shrimp_liquidation_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

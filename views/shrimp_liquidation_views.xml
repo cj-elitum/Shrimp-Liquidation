@@ -13,10 +13,12 @@
         <field name="arch" type="xml">
             <tree string="Shrimp Liquidations" >
                 <field name="name" decoration-bf="1"/>
+                <field name="create_date" widget="date"/>
                 <field name="provider_id"/>
+                <field name="process"/>
                 <field name="classified_pounds"/>
                 <field name="classified_uom"/>
-                <field name="process"/>
+                <field name="process_plant"/>
                 <field name="state" decoration-success="state == 'done'" decoration-warning="state != 'draft' and state != 'done'" decoration-info="state == 'draft'" widget="badge"  />
             </tree>
         </field>
@@ -85,7 +87,7 @@
                     </group>
                     <group>
                         <group>
-                            <field name="proccess_plant"/>
+                            <field name="process_plant"/>
                             <field name="provider_id" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                             <field name="reported_pounds" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                             <field name="classified_pounds"/>

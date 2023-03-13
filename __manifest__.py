@@ -1,10 +1,11 @@
 {
     'name': 'Shrimp Liquidation',
     'version': '1.0',
-    'category': 'Sales/Sales',
+    'category': 'Shrimp/Liquidation',
     'description': "Module for liquidation of shrimp",
-    'depends': ['base', 'product', 'stock', 'stock_landed_costs'],
+    'depends': ['base', 'product', 'stock', 'stock_landed_costs', 'web_domain_field'],
     'data': [
+        'security/shrimp_liquidation_security.xml',
         'security/ir.model.access.csv',
         'views/stock_move_views.xml',
         'views/shrimp_liquidation_views.xml',
