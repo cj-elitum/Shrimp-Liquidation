@@ -19,6 +19,9 @@ class Liquidation(models.Model):
                                                       ('warehouse_id.company_id', '=', company_id)
                                                       ], limit=1).id
 
+    def _get_default_classified_pounds_uom(self):
+        return self.env['uom.uom'].search([('name', '=', 'lb')], limit=1).id
+
     @api.depends('company_id')
     def _compute_production_location(self):
         if not self.company_id:
@@ -50,6 +53,8 @@ class Liquidation(models.Model):
     provider_id = fields.Many2one('res.partner', string="Proveedor", required=True)
     reported_pounds = fields.Float(string="Libras reportadas", required=True)
     classified_pounds = fields.Float(string="Libras clasificadas", compute="_compute_classified_pounds", required=True)
+    classified_uom = fields.Many2one('uom.uom', string="UdM", default=_get_default_classified_pounds_uom)
+
     reception_date = fields.Date(string="Fecha de recepción")
     received_pounds = fields.Float(string="Libras recibidas")
     batch_number = fields.Char(string="Número de lote")
@@ -153,7 +158,6 @@ class Liquidation(models.Model):
                     'product_service_id': service.id,
                     'provider_id': service.seller_ids.name.id,
                 })]
-
 
     @api.depends('liquidity_lines_ids')
     def _compute_total_packaged_weight(self):

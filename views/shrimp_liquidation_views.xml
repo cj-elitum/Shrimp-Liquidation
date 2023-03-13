@@ -11,8 +11,13 @@
         <field name="name">shrimp_liquidation_tree</field>
         <field name="model">shrimp_liquidation.liquidation</field>
         <field name="arch" type="xml">
-            <tree string="Shrimp Liquidations">
-                <field name="name"/>
+            <tree string="Shrimp Liquidations" >
+                <field name="name" decoration-bf="1"/>
+                <field name="provider_id"/>
+                <field name="classified_pounds"/>
+                <field name="classified_uom"/>
+                <field name="process"/>
+                <field name="state" decoration-success="state == 'done'" decoration-warning="state != 'draft' and state != 'done'" decoration-info="state == 'draft'" widget="badge"  />
             </tree>
         </field>
     </record>
@@ -176,7 +181,8 @@
                                    attrs="{'readonly': [('state', 'in', ('used_services','done'))]}">
                                 <tree editable="bottom" decoration-muted="parent.state in ('used_services','done')">
                                     <field name="product_service_id"/>
-                                    <field name="provider_id"/>
+                                    <field name="provider_id_domain" invisible="1"/>
+                                    <field name="provider_id" domain="provider_id_domain"/>
                                     <field name="service_unit_cost"/>
                                 </tree>
                             </field>
